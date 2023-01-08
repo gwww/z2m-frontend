@@ -14,7 +14,7 @@ console.log('MQTT connecting...')
 // let client = mqtt.connect(
 //   MQTT_SERVER_URI!, { username: MQTT_USERNAME, password: MQTT_PASSWORD });
 let client = mqtt.connect(
-  'ws://192.168.1.15:1884', { username: 'glenn', password: 'thethe1' });
+  'ws://192.168.1.1:1884', { username: '', password: '' });
 
 client.on('connect', function() {
   console.log('MQTT connected!')
@@ -30,6 +30,6 @@ client.on('message', function(topic, message) {
     console.log(message.toString())
   }
   if (topic === 'zigbee2mqtt/bridge/devices') {
-    devices.set(message.toString())
+    devices.set(JSON.parse(message.toString()))
   }
 });
