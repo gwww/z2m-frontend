@@ -1,28 +1,9 @@
 <script lang="ts">
 	import Grid from 'gridjs-svelte';
 	import { html } from 'gridjs';
-	import 'gridjs/dist/theme/mermaid.css';
+	// import 'gridjs/dist/theme/mermaid.css';
 	import type { Device } from '$lib/types';
 	import { devices } from '$lib/stores';
-
-	function getDeviceAttrs(devices: Device[]): Record<string, unknown>[] {
-		return devices.flatMap((device) => {
-			if (device.type === 'Coordinator') {
-				return [];
-			}
-			return [
-				{
-					name: device.friendly_name,
-					makeModel: { make: device.definition.vendor, model: device.definition.model },
-					make: device.definition.vendor,
-					model: device.definition.model,
-					addr: { ieee: device.ieee_address, network: device.network_address },
-					power_source: device.power_source,
-					picture: 'MCCGQ14LM'
-				}
-			];
-		});
-	}
 
 	function strCmp(a: string, b: string): number {
 		if (a < b) {
@@ -33,44 +14,53 @@
 		return 0;
 	}
 
-	$: data = getDeviceAttrs($devices);
+	function log(...args: any[]) {
+		console.log(...args);
+	}
 
 	const columns = [
-		{ name: 'Name', id: 'name' },
+		{
+			name: 'Name',
+			id: 'friendly_name',
+		},
 		{
 			name: 'Make / Model',
-			id: 'makeModel',
-			formatter: (cell: Record<string, undefined>) => html(`${cell.make}<br>${cell.model}`),
+			data: (row: Device) => {
+				return [row.definition.vendor, row.definition.model];
+			},
+			formatter: (cell: Array<string>) => html(`${cell[0]}<br>${cell[1]}`),
 			sort: {
-				compare: (a: Record<string, unknown>, b: Record<string, unknown>) => {
-					return strCmp(a.make + a.model, b.make + b.model);
-				}
-			}
+				compare: (a: Array<string>, b: Array<string>) => {
+					return strCmp(a[0] + a[1], b[0] + b[1]);
+				},
+			},
 		},
 		{
 			name: 'Address',
-			id: 'addr',
-			formatter: (cell: Record<string, undefined>) => html(`${cell.ieee}<br>${cell.network}`),
+			data: (row: Device) => {
+				return [row.ieee_address, '0x' + row.network_address.toString(16)];
+			},
+			formatter: (cell: Record<string, undefined>) => html(`${cell[0]}<br>${cell[1]}`),
 			sort: {
-				compare: (a: Record<string, unknown>, b: Record<string, unknown>) => {
-					return strCmp(a.ieee + a.network, b.ieee + b.network);
-				}
-			}
+				compare: (a: Array<string>, b: Array<string>) => {
+					return strCmp(a[0] + a[1], b[0] + b[1]);
+				},
+			},
 		},
-		{ name: 'Power', id: 'power_source' }
+		{
+			name: 'Power',
+			id: 'power_source',
+		},
 	];
 
 	const className = {
-		container: 'table-container m-8'
+		container: 'table-container m-8',
+		table: 'table table-hover',
 	};
 
-	const search = {
-		enabled: true
-	};
+	const search = { enabled: true };
 
-	function log(...args) {
-		console.log(...args);
-	}
+	$: data = $devices.filter((device) => device.type !== 'Coordinator');
 </script>
 
 <Grid on:rowClick={log} {data} {columns} {className} {search} sort={true} />
