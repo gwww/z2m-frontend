@@ -1,6 +1,5 @@
+import type { Device } from '$lib/types'
 import { writable } from 'svelte/store';
 
-export type MQTTrecord = Record<string, unknown>
-const init: MQTTrecord[] = [];
-
+const init: Device[] = []
 export const devices = writable(init);
