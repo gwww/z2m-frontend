@@ -1,20 +1,11 @@
-// import { MQTT_SERVER_URI, MQTT_USERNAME, MQTT_PASSWORD } from '$env/static/private';
+import { devices } from '$lib/stores'
+import { mqtt_env } from './mqtt_env.js'
 import * as mqtt from 'mqtt';
 
 export const ssr = false;
 
-import { devices } from '$lib/stores'
-
-// if (process.env.MQTT_SERVER_URI === null) {
-//   console.log('MQTT URI not specified in .env')
-//   // exit...
-// }
-
-console.log('MQTT connecting...')
-// let client = mqtt.connect(
-//   MQTT_SERVER_URI!, { username: MQTT_USERNAME, password: MQTT_PASSWORD });
-let client = mqtt.connect(
-  'ws://192.168.1.1:1884', { username: '', password: '' });
+// server example: 'ws://192.168.1.1:1884'
+let client = mqtt.connect(mqtt_env.server, { username: mqtt_env.user, password: mqtt_env.password });
 
 client.on('connect', function() {
   console.log('MQTT connected!')
@@ -24,12 +15,13 @@ client.on('connect', function() {
 })
 
 client.on('message', function(topic, message) {
-  console.log('Topic: ', topic);
-
+  // console.log('Topic: ', topic);
   if (!topic.startsWith('zigbee2mqtt/bridge/')) {
-    console.log(message.toString())
+    // console.log(message.toString())
   }
+
   if (topic === 'zigbee2mqtt/bridge/devices') {
+    console.log("Updating store with devices")
     devices.set(JSON.parse(message.toString()))
   }
 });
