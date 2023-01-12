@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Grid from 'gridjs-svelte';
 	import { html } from 'gridjs';
-	// import 'gridjs/dist/theme/mermaid.css';
+	import 'gridjs/dist/theme/mermaid.css';
 	import type { Device } from '$lib/types';
 	import { devices } from '$lib/stores';
 
@@ -55,7 +55,7 @@
 
 	const className = {
 		container: 'table-container m-8',
-		table: 'table table-hover',
+		table: 'table-auto',
 	};
 
 	const search = { enabled: true };

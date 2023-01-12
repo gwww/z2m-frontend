@@ -5,5 +5,5 @@ module.exports = {
 	theme: {
 		extend: {},
 	},
-	plugins: [require('@skeletonlabs/skeleton/tailwind/theme.cjs')],
+	plugins: [require('@skeletonlabs/skeleton/tailwind/skeleton.cjs')],
 }
