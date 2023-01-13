@@ -1,28 +1,27 @@
 <script lang="ts">
-	import { DataTable } from '$components/DataTable';
-	import type { Column } from '$components/DataTable';
+  import { DataTable } from '$components/DataTable';
+  import type { Column } from '$components/DataTable';
 
-	const columns: Column[] = [
-		{
-			name: 'Month',
-			id: 'foo',
-		},
-		{
-			name: 'Saving',
-			id: 'foo',
-			render: (cell: any) => 'Cell42: ' + cell.a + cell.b,
-		},
-		{
-			name: 'Account',
-			id: 'acct',
-		},
-	];
+  const columns: Column[] = [
+    {
+      name: 'Month',
+      id: 'month',
+    },
+    {
+      name: 'Saving',
+      id: 'saving',
+      render: (cell: any) => '<b>Cell42: </b><br>' + cell.a + cell.b,
+    },
+    {
+      name: 'Account',
+      id: 'acct',
+    },
+  ];
 
-	const data = [
-		['foo', { a: '4', b: '2' }, { acct: 'Checking' }],
-		['moo', { a: 'Forty', b: 'two' }, { acct: 'Savings' }],
-		// ['moo', 'zoo'],
-	];
+  const data = [
+    { month: 'January', saving: { a: 4, b: 2 }, acct: 'Checking' },
+    { month: 'February', saving: { a: 'Forty', b: 'Two' }, acct: 'Savings' },
+  ];
 </script>
 
 <DataTable {columns} {data} />
