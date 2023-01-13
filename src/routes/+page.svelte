@@ -5,9 +5,11 @@
 	const columns: Column[] = [
 		{
 			name: 'Month',
+			id: 'foo',
 		},
 		{
 			name: 'Saving',
+			id: 'foo',
 			render: (cell: any) => 'Cell42: ' + cell.a + cell.b,
 		},
 		{
