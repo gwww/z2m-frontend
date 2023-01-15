@@ -1,16 +1,18 @@
 <script lang="ts">
-  import { DataTable } from '$components/DataTable';
-  import type { Column } from '$components/DataTable';
+  import { DataTable, DataTableFilter } from '$components/DataTable';
+  import type { Column, Styles } from '$components/DataTable';
 
   const columns: Column[] = [
     {
       name: 'Month',
       id: 'month',
+      sort: true,
     },
     {
       name: 'Saving',
       id: 'saving',
-      render: (cell: any) => '<b>Cell42: </b><br>' + cell.a + cell.b,
+      render_html: (cell: any) => cell.a + '<br>' + cell.b,
+      sort: true,
     },
     {
       name: 'Account',
@@ -20,8 +22,25 @@
 
   const data = [
     { month: 'January', saving: { a: 4, b: 2 }, acct: 'Checking' },
-    { month: 'February', saving: { a: 'Forty', b: 'Two' }, acct: 'Savings' },
+    {
+      month: 'February',
+      saving: { a: 'Forty', b: 'Two' },
+      acct: 'Savings savings savings savings savings savings',
+    },
   ];
+
+  const styles: Styles = {
+    container: 'table-container mt-8',
+    table: 'table table-hover',
+  };
+
+  const tableSelector = '#myTable';
 </script>
 
-<DataTable {columns} {data} />
+<DataTableFilter {tableSelector} />
+<div id="myTable">
+  <DataTable {columns} {data} {styles} />
+</div>
+
+<style>
+</style>
