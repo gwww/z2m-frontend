@@ -1,11 +1,11 @@
 <script context="module" lang="ts">
-  let node: Element;
   const classAsc = 'table-sort-asc';
   const classDsc = 'table-sort-dsc';
 
   function handleSortEvent(e: Event) {
     if (!(e.target instanceof Element)) return;
     const sortTarget = e.target;
+    const node = sortTarget.closest('thead')!;
 
     // Get target state before modification
     const targetAscSorted = sortTarget.classList.contains(classAsc);
@@ -61,7 +61,6 @@
       handleSortEvent(e);
     }}
     on:keypress
-    bind:this={node}
   >
     <tr>
       {#each columns as item, i}
