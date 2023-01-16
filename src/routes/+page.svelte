@@ -1,8 +1,41 @@
 <script lang="ts">
   import { DataTable, DataTableFilter } from '$components/DataTable';
   import type { Column, Styles } from '$components/DataTable';
+  import type { Device, DeviceDefinition } from '$lib/types';
+  import { devices } from '$lib/stores';
 
   const columns: Column[] = [
+    {
+      name: 'Name',
+      id: 'friendly_name',
+      sort: true,
+    },
+    {
+      name: 'Make / Model',
+      id: 'definition',
+      render_html: (cell: DeviceDefinition) => `${cell.vendor}<br>${cell.model}`,
+      sort: true,
+    },
+    {
+      name: 'Address',
+      id: '',
+      // data: (row: Device) => {
+      // 	return [row.ieee_address, '0x' + row.network_address.toString(16)];
+      // },
+      render_html: (cell: Device) => `${cell.ieee_address}<br>${cell.network_address}`,
+    },
+    {
+      name: 'Power',
+      id: 'power_source',
+      sort: true,
+    },
+  ];
+
+  const tableSelector = '#myTable';
+
+  $: data = $devices.filter((device) => device.type !== 'Coordinator');
+
+  const columns2: Column[] = [
     {
       name: 'Month',
       id: 'month',
@@ -20,7 +53,7 @@
     },
   ];
 
-  const data = [
+  const data2 = [
     { month: 'January', saving: { a: 4, b: 2 }, acct: 'Checking' },
     {
       month: 'February',
@@ -29,11 +62,10 @@
     },
   ];
 
-  const columns2: Column[] = [
+  const columns3: Column[] = [
     {
       name: 'Month',
       sort: true,
-      id: '',
     },
     {
       name: 'Saving',
@@ -44,7 +76,7 @@
       name: 'Account',
     },
   ];
-  const data2 = [
+  const data3 = [
     ['2January', { a: 4, b: 2 }, 'Checking'],
     ['2February', { a: 'Forty', b: 'Two' }, 'Savings savings savings'],
   ];
@@ -53,8 +85,6 @@
     container: 'table-container mt-8',
     table: 'table table-hover',
   };
-
-  const tableSelector = '#myTable';
 </script>
 
 <DataTableFilter {tableSelector} />
@@ -62,9 +92,14 @@
   <DataTable {columns} {data} {styles} />
 </div>
 
-<div id="myTable2">
+<div id="myTable">
   <DataTable columns={columns2} data={data2} {styles} />
 </div>
 
+<div id="myTable2">
+  <DataTable columns={columns3} data={data3} {styles} />
+</div>
+
+<!---->
 <style>
 </style>
