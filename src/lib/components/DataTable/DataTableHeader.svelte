@@ -50,7 +50,6 @@
 
 <script lang="ts">
   import type { Column } from './types';
-  import './styles.css';
   export let columns: Column[];
 
   const sortable = columns.some((col) => col.sort);
@@ -84,4 +83,22 @@
 {/if}
 
 <style>
+  .table-asc::after {
+    content: '↓';
+    margin-left: 0.5rem;
+    visibility: hidden;
+    opacity: 50%;
+  }
+  .table-dsc::after {
+    content: '↑';
+    margin-left: 0.5rem;
+    visibility: hidden;
+    opacity: 50%;
+  }
+  .table-asc:global([aria-sort='ascending'])::after {
+    visibility: visible;
+  }
+  .table-dsc:global([aria-sort='descending'])::after {
+    visibility: visible;
+  }
 </style>
