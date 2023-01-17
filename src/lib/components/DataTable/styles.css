@@ -1,0 +1,20 @@
+/* Styles placed in separate file as SvelteKit bug optimizes out the last two classes */
+/* TODO: convert to TailwindCSS */
+.table-asc::after {
+  content: '↓';
+  margin-left: 0.5rem;
+  visibility: hidden;
+  opacity: 50%;
+}
+.table-dsc::after {
+  content: '↑';
+  margin-left: 0.5rem;
+  visibility: hidden;
+  opacity: 50%;
+}
+.table-asc[aria-sort='ascending']::after {
+  visibility: visible;
+}
+.table-dsc[aria-sort='descending']::after {
+  visibility: visible;
+}

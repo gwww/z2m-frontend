@@ -1,27 +1,27 @@
 <script context="module" lang="ts">
-  const classAsc = 'table-sort-asc';
-  const classDsc = 'table-sort-dsc';
+  const classAsc = 'table-asc';
+  const classDsc = 'table-dsc';
 
   function handleSortEvent(e: Event) {
     if (!(e.target instanceof Element)) return;
-    const sortTarget = e.target;
+    const sortTarget = e.target as HTMLElement;
     const node = sortTarget.closest('thead')!;
 
-    // Get target state before modification
-    const targetAscSorted = sortTarget.classList.contains(classAsc);
-    const sortTargetKey = sortTarget.getAttribute('data-sort');
-    if (!sortTargetKey) return;
+    // Set desired new sort order
+    const sortAscending = sortTarget.getAttribute('aria-sort') !== 'ascending';
+    const sortColumn = sortTarget.getAttribute('data-sort');
+    if (!sortColumn) return;
 
-    // Clear asc/dsc classes
-    const elemAsc = node.querySelector(`.${classAsc}`);
-    if (elemAsc) elemAsc.classList.remove(classAsc);
-    const elemDsc = node.querySelector(`.${classDsc}`);
-    if (elemDsc) elemDsc.classList.remove(classDsc);
+    node.querySelectorAll<HTMLElement>(`.${classAsc}, .${classDsc}`).forEach((el) => {
+      el.setAttribute('aria-sort', 'none');
+    });
 
-    // Set new sort class
-    const classToApply = targetAscSorted ? classDsc : classAsc;
-    e.target.classList.add(classToApply);
-    sortTable(sortTarget.closest('table')!, Number(sortTargetKey), classToApply === classAsc);
+    sortTarget.classList.remove(classAsc);
+    sortTarget.classList.remove(classDsc);
+    sortTarget.classList.add(sortAscending ? classAsc : classDsc);
+    sortTarget.setAttribute('aria-sort', sortAscending ? 'ascending' : 'descending');
+
+    sortTable(sortTarget.closest('table')!, Number(sortColumn), sortAscending);
   }
 
   // Adapted from https://stackoverflow.com/a/55462779
@@ -50,6 +50,7 @@
 
 <script lang="ts">
   import type { Column } from './types';
+  import './styles.css';
   export let columns: Column[];
 
   const sortable = columns.some((col) => col.sort);
@@ -65,7 +66,7 @@
     <tr>
       {#each columns as item, i}
         {#if item.sort}
-          <th data-sort={i + 1}>{item.name}</th>
+          <th data-sort={i + 1} aria-sort="none" class={classAsc}>{item.name}</th>
         {:else}
           <th>{item.name}</th>
         {/if}
