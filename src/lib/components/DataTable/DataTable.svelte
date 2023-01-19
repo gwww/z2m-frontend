@@ -5,9 +5,6 @@
   export let columns: Column[];
   export let data: Array<any>;
   export let styles: Styles = {};
-
-  // Either all or none of the columns can have 'id'
-  // const indexedData = !columns.some((col) => col.id);
 </script>
 
 <div class={styles.container ?? ''}>

@@ -1,4 +1,5 @@
-import { devices } from '$lib/stores'
+import { devices, state } from '$lib/stores'
+import type { Device } from '$lib/types'
 import { mqtt_env } from './mqtt_env.js'
 import * as mqtt from 'mqtt';
 
@@ -15,13 +16,17 @@ client.on('connect', function() {
 })
 
 client.on('message', function(topic, message) {
-  // console.log('Topic: ', topic);
+  console.log('Topic: ', topic);
   if (!topic.startsWith('zigbee2mqtt/bridge/')) {
-    // console.log(message.toString())
+    console.log(message.toString())
   }
 
   if (topic === 'zigbee2mqtt/bridge/devices') {
-    console.log("Updating store with devices")
-    devices.set(JSON.parse(message.toString()))
+    const devices_msg = JSON.parse(message.toString())
+    devices.set(devices_msg)
+    devices_msg.forEach((device: Device) => {
+      if (device.type === 'Coordinator') return;
+      client.publish(`zigbee2mqtt/${device.friendly_name}/get`, '{"state": ""}')
+    })
   }
 });

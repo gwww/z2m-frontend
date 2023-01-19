@@ -19,9 +19,6 @@
     {
       name: 'Address',
       id: '',
-      // data: (row: Device) => {
-      // 	return [row.ieee_address, '0x' + row.network_address.toString(16)];
-      // },
       render_html: (cell: Device) => `${cell.ieee_address}<br>${cell.network_address}`,
     },
     {
