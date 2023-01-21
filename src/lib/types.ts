@@ -1,6 +1,10 @@
 // Placeholder for object attributes not used by this app
 // As the code develops the NotUsed may be replaced with actual type info
-export type NotUsed = any;
+export type NotUsed = any
+
+export type GenericObject = Record<string, unknown>
+
+export type DeviceState = GenericObject | undefined
 
 export type DeviceType = "Router" | "Coordinator" | "EndDevice"
 

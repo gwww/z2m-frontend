@@ -9,6 +9,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.48.2
   async-mqtt: ^2.6.3
   autoprefixer: ^10.4.13
+  classnames: ^2.3.2
   eslint: ^8.32.0
   eslint-config-prettier: ^8.6.0
   eslint-plugin-svelte3: ^4.0.0
@@ -34,6 +35,7 @@ devDependencies:
   '@typescript-eslint/parser': 5.48.2_7uibuqfxkfaozanbtbziikiqje
   async-mqtt: 2.6.3
   autoprefixer: 10.4.13_postcss@8.4.21
+  classnames: 2.3.2
   eslint: 8.32.0
   eslint-config-prettier: 8.6.0_eslint@8.32.0
   eslint-plugin-svelte3: 4.0.0_tmo5zkisvhu6htudosk5k7m6pu
@@ -797,6 +799,10 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
+
+  /classnames/2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
     dev: true
 
   /color-convert/2.0.1:
