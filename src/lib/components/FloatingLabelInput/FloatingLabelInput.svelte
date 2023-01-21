@@ -1,4 +1,5 @@
 <script lang="ts">
+  // Adapted from: https://github.com/themesberg/flowbite-svelte/blob/main/src/lib/forms/FloatingLabelInput.svelte
   import classNames from 'classnames';
   import generateId from '../../utils/generateId.js';
   import type { InputType } from './types';
