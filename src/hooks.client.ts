@@ -1,4 +1,4 @@
-import { devices, device_states } from '$lib/stores'
+import { devices, device_availability, device_states } from '$lib/stores'
 import type { Device, DeviceState } from '$lib/types'
 import { mqtt_env } from './mqtt_env.js' // Private file with credentials in it
 import * as mqtt from 'mqtt';
@@ -41,7 +41,6 @@ client.on('message', function(topic, message) {
       states[entity_name] = json_msg;
       return states
     })
-
     return
   }
 
@@ -52,7 +51,13 @@ client.on('message', function(topic, message) {
       if (json_msg === undefined) return
       devices.set(json_msg as unknown as Device[])
     }
-
     return
+  } else if (comps[2] === 'availability') {
+    const entity_name = comps[1]
+    device_availability.update((avail) => {
+      console.log(`availability for ${entity_name} set to ${msg}`)
+      avail[entity_name] = msg;
+      return avail;
+    })
   }
 })
