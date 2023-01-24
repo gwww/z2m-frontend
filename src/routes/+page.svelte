@@ -1,66 +1,102 @@
 <script lang="ts">
-	import Grid from 'gridjs-svelte';
-	import { html } from 'gridjs';
-	import 'gridjs/dist/theme/mermaid.css';
-	import type { Device } from '$lib/types';
-	import { devices } from '$lib/stores';
+  import { DataTable, DataTableFilter } from '$components/DataTable';
+  import type { Column, Styles } from '$components/DataTable';
+  import type { Device, DeviceDefinition } from '$lib/types';
+  import { devices } from '$lib/stores';
 
-	function strCmp(a: string, b: string): number {
-		if (a < b) {
-			return -1;
-		} else if (a > b) {
-			return 1;
-		}
-		return 0;
-	}
+  const columns: Column[] = [
+    {
+      name: 'Name',
+      id: 'friendly_name',
+      sort: true,
+    },
+    {
+      name: 'Make / Model',
+      id: 'definition',
+      render_html: (cell: DeviceDefinition) => `${cell.vendor}<br>${cell.model}`,
+      sort: true,
+    },
+    {
+      name: 'Address',
+      id: '',
+      render_html: (cell: Device) => `${cell.ieee_address}<br>${cell.network_address}`,
+    },
+    {
+      name: 'Power',
+      id: 'power_source',
+      sort: true,
+    },
+  ];
 
-	function log(...args: any[]) {
-		console.log(...args);
-	}
+  const tableSelector = '#myTable';
 
-	const columns = [
-		{
-			name: 'Name',
-			id: 'friendly_name',
-		},
-		{
-			name: 'Make / Model',
-			data: (row: Device) => {
-				return [row.definition.vendor, row.definition.model];
-			},
-			formatter: (cell: Array<string>) => html(`${cell[0]}<br>${cell[1]}`),
-			sort: {
-				compare: (a: Array<string>, b: Array<string>) => {
-					return strCmp(a[0] + a[1], b[0] + b[1]);
-				},
-			},
-		},
-		{
-			name: 'Address',
-			data: (row: Device) => {
-				return [row.ieee_address, '0x' + row.network_address.toString(16)];
-			},
-			formatter: (cell: Record<string, undefined>) => html(`${cell[0]}<br>${cell[1]}`),
-			sort: {
-				compare: (a: Array<string>, b: Array<string>) => {
-					return strCmp(a[0] + a[1], b[0] + b[1]);
-				},
-			},
-		},
-		{
-			name: 'Power',
-			id: 'power_source',
-		},
-	];
+  $: data = $devices.filter((device) => device.type !== 'Coordinator');
 
-	const className = {
-		container: 'table-container m-8',
-		table: 'table-auto',
-	};
+  const columns2: Column[] = [
+    {
+      name: 'Month',
+      id: 'month',
+      sort: true,
+    },
+    {
+      name: 'Saving',
+      id: 'saving',
+      render_html: (cell: any) => cell.a + '<br>' + cell.b,
+      sort: true,
+    },
+    {
+      name: 'Account',
+      id: 'acct',
+    },
+  ];
 
-	const search = { enabled: true };
+  const data2 = [
+    { month: 'January', saving: { a: 4, b: 2 }, acct: 'Checking' },
+    {
+      month: 'February',
+      saving: { a: 'Forty', b: 'Two' },
+      acct: 'Savings savings savings',
+    },
+  ];
 
-	$: data = $devices.filter((device) => device.type !== 'Coordinator');
+  const columns3: Column[] = [
+    {
+      name: 'Month',
+      sort: true,
+    },
+    {
+      name: 'Saving',
+      render_html: (cell: any) => cell.a + '<br>' + cell.b,
+      sort: true,
+    },
+    {
+      name: 'Account',
+    },
+  ];
+  const data3 = [
+    ['2January', { a: 4, b: 2 }, 'Checking'],
+    ['2February', { a: 'Forty', b: 'Two' }, 'Savings savings savings'],
+  ];
+
+  const styles: Styles = {
+    container: 'table-container mt-8',
+    table: 'table table-hover',
+  };
 </script>
 
-<Grid on:rowClick={log} {data} {columns} {className} {search} sort={true} />
+<DataTableFilter {tableSelector} />
+<div id="myTable">
+  <DataTable {columns} {data} {styles} />
+</div>
+
+<div id="myTable">
+  <DataTable columns={columns2} data={data2} {styles} />
+</div>
+
+<div id="myTable2">
+  <DataTable columns={columns3} data={data3} {styles} />
+</div>
+
+<!---->
+<style>
+</style>
