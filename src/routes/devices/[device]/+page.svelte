@@ -10,12 +10,19 @@
     let storeThree = writable('a');
 
     const key = $page.params.device;
+    let name = key;
     $: device = $devices.find((dev: Device) => dev.friendly_name === key);
     $: device_state = $device_states[key as keyof DeviceState];
 
     const image = 'https://www.zigbee2mqtt.io/images/devices/LED2003G10.jpg';
     let fallback = './static/zigbee-logo.png';
     const handleError = (e: Event) => ((<HTMLImageElement>e.target).src = fallback);
+
+    function nameInput() {
+        if (name !== key) {
+            console.log('name changed ', name);
+        }
+    }
 </script>
 
 {#if device}
@@ -32,14 +39,20 @@
                 <label class="input-label">
                     <span class="text-sm text-surface-500 pl-2">Friendly name</span>
                     <div class="grid grid-cols-[1fr_auto_auto] !m-1">
-                        <input class="text-2xl" type="text" value={key} placeholder="Name..." />
+                        <input
+                            class="text-2xl"
+                            type="text"
+                            bind:value={name}
+                            placeholder="Name..."
+                            on:keyup={nameInput}
+                        />
                         <div class="flex items-center">
-                            <span class="text-error-500 ml-1">
+                            <button class="text-error-500 ml-1 hover:brightness-[1.15]">
                                 <SvgIcon size={36} path={mdiCloseCircle} />
-                            </span>
-                            <span class="text-success-500 ml-0">
+                            </button>
+                            <button class="text-success-600 ml-1 hover:brightness-[1.15]">
                                 <SvgIcon size={36} path={mdiCheckCircle} />
-                            </span>
+                            </button>
                         </div>
                     </div>
                 </label>
