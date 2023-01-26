@@ -1,4 +1,4 @@
-import { devices, device_availability, device_states } from '$lib/stores'
+import { devices, device_available, device_states } from '$lib/stores'
 import type { Device, DeviceState } from '$lib/types'
 import { mqtt_env } from './mqtt_env.js' // Private file with credentials in it
 import * as mqtt from 'mqtt';
@@ -54,9 +54,9 @@ client.on('message', function(topic, message) {
     return
   } else if (comps[2] === 'availability') {
     const entity_name = comps[1]
-    device_availability.update((avail) => {
+    device_available.update((avail) => {
       console.log(`availability for ${entity_name} set to ${msg}`)
-      avail[entity_name] = msg;
+      avail[entity_name] = msg === 'online';
       return avail;
     })
   }

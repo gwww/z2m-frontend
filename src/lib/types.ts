@@ -2,6 +2,10 @@
 // As the code develops the NotUsed may be replaced with actual type info
 export type NotUsed = any
 
+export interface Dictionary<T> {
+  [key: string]: T;
+}
+
 export type GenericObject = Record<string, unknown>
 
 export type DeviceState = GenericObject | undefined

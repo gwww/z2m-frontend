@@ -1,11 +1,6 @@
-import type { Device, DeviceState } from '$lib/types'
-import { writable } from 'svelte/store';
+import type { Device, DeviceState, Dictionary } from '$lib/types'
+import { writable, type Writable } from 'svelte/store';
 
-const devices_init: Device[] = []
-export const devices = writable(devices_init);
-
-const device_states_init: { [key: string]: DeviceState } = {}
-export const device_states = writable(device_states_init);
-
-const device_avail: { [key: string]: string } = {}
-export const device_availability = writable(device_avail);
+export const devices: Writable<Device[]> = writable([])
+export const device_states: Writable<Dictionary<DeviceState>> = writable({})
+export const device_available: Writable<Dictionary<boolean>> = writable({})
