@@ -1,5 +1,5 @@
-import { devices, device_available, device_states } from '$lib/stores';
-import type { Device, DeviceState } from '$lib/types';
+import { bridge_info, devices, device_available, device_states } from '$lib/stores';
+import type { BridgeInfo, Device, DeviceState } from '$lib/types';
 import { mqtt_env } from './mqtt_env.js'; // Private file with credentials in it
 import * as mqtt from 'mqtt';
 
@@ -12,14 +12,14 @@ let client = mqtt.connect(mqtt_env.server, {
     password: mqtt_env.password,
 });
 
-client.on('connect', function () {
+client.on('connect', function() {
     console.log('MQTT connected!');
-    client.subscribe('zigbee2mqtt/#', function (err, granted) {
+    client.subscribe('zigbee2mqtt/#', function(err, granted) {
         console.log('subscribe: ', err, granted);
     });
 });
 
-client.on('message', function (topic, message) {
+client.on('message', function(topic, message) {
     // console.log('Topic: ', topic);
     // if (!topic.startsWith('zigbee2mqtt/bridge/')) {
     //   console.log(message.toString())
@@ -32,7 +32,7 @@ client.on('message', function (topic, message) {
     let json_msg: DeviceState;
     try {
         json_msg = JSON.parse(msg);
-    } catch {} // Nothing to do here
+    } catch { } // Nothing to do here
 
     // Is this a state update?
     if (comps.length === 2) {
@@ -53,6 +53,9 @@ client.on('message', function (topic, message) {
         if (bridge_topic === 'devices') {
             if (json_msg === undefined) return;
             devices.set(json_msg as unknown as Device[]);
+        } else if (bridge_topic === 'info') {
+            if (json_msg === undefined) return;
+            bridge_info.set(json_msg as unknown as BridgeInfo);
         }
         return;
     } else if (comps[2] === 'availability') {
