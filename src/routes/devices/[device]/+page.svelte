@@ -15,7 +15,7 @@
     $: device_state = $device_states[key as keyof DeviceState];
 
     const image = 'https://www.zigbee2mqtt.io/images/devices/LED2003G10.jpg';
-    let fallback = './static/zigbee-logo.png';
+    let fallback = '/images/zigbee-logo.png';
     const handleError = (e: Event) => ((<HTMLImageElement>e.target).src = fallback);
 
     function nameInput() {
