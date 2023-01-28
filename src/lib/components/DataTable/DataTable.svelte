@@ -14,25 +14,27 @@
             {#each data as item}
                 <tr>
                     {#each columns as column, i}
-                        {#if column.id !== undefined}
-                            {@const value = column.id === '' ? item : item[column.id]}
-                            {#if column.render}
-                                <td>{column.render(value)}</td>
-                            {:else if column.render_html}
-                                <td>{@html column.render_html(value)}</td>
-                            {:else}
-                                <td>{value}</td>
-                            {/if}
+                        {#if !column.hidden}
+                            {#if column.id !== undefined}
+                                {@const value = column.id === '' ? item : item[column.id]}
+                                {#if column.render}
+                                    <td>{column.render(value)}</td>
+                                {:else if column.render_html}
+                                    <td>{@html column.render_html(value)}</td>
+                                {:else}
+                                    <td>{value}</td>
+                                {/if}
 
-                            <!-- Array data... -->
-                        {:else}
-                            {@const value = item[i]}
-                            {#if column.render}
-                                <td>{column.render(value)}</td>
-                            {:else if column.render_html}
-                                <td>{@html column.render_html(value)}</td>
+                                <!-- Array data... -->
                             {:else}
-                                <td>{value}</td>
+                                {@const value = item[i]}
+                                {#if column.render}
+                                    <td>{column.render(value)}</td>
+                                {:else if column.render_html}
+                                    <td>{@html column.render_html(value)}</td>
+                                {:else}
+                                    <td>{value}</td>
+                                {/if}
                             {/if}
                         {/if}
                     {/each}

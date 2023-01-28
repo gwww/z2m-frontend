@@ -1,5 +1,5 @@
 import { bridge_info, devices, device_available, device_states } from '$lib/stores';
-import type { BridgeInfo, Device, DeviceState } from '$lib/types';
+import type { BridgeInfo, Device, DeviceState, GenericObject } from '$lib/types';
 import { mqtt_env } from './mqtt_env.js'; // Private file with credentials in it
 import * as mqtt from 'mqtt';
 
@@ -29,7 +29,7 @@ client.on('message', function(topic, message) {
     if (comps[0] !== 'zigbee2mqtt') return;
 
     const msg = message.toString();
-    let json_msg: DeviceState;
+    let json_msg: GenericObject | undefined;
     try {
         json_msg = JSON.parse(msg);
     } catch { } // Nothing to do here
@@ -41,7 +41,7 @@ client.on('message', function(topic, message) {
 
         const entity_name = comps[1];
         device_states.update((states) => {
-            states[entity_name] = json_msg;
+            states[entity_name] = json_msg as DeviceState;
             return states;
         });
         return;
@@ -55,13 +55,14 @@ client.on('message', function(topic, message) {
             devices.set(json_msg as unknown as Device[]);
         } else if (bridge_topic === 'info') {
             if (json_msg === undefined) return;
+            console.log('bridge/info being set')
             bridge_info.set(json_msg as unknown as BridgeInfo);
         }
         return;
     } else if (comps[2] === 'availability') {
         const entity_name = comps[1];
         device_available.update((avail) => {
-            console.log(`availability for ${entity_name} set to ${msg}`);
+            // console.log(`availability for ${entity_name} set to ${msg}`);
             avail[entity_name] = msg === 'online';
             return avail;
         });

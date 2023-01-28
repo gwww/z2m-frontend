@@ -63,11 +63,13 @@
         on:keypress
     >
         <tr>
-            {#each columns as item, i}
-                {#if item.sort}
-                    <th data-sort={i + 1} aria-sort="none" class={classAsc}>{item.name}</th>
-                {:else}
-                    <th>{item.name}</th>
+            {#each columns as column, i}
+                {#if !column.hidden}
+                    {#if column.sort}
+                        <th data-sort={i + 1} aria-sort="none" class={classAsc}>{column.name}</th>
+                    {:else}
+                        <th>{column.name}</th>
+                    {/if}
                 {/if}
             {/each}
         </tr>
@@ -75,8 +77,10 @@
 {:else}
     <thead>
         <tr>
-            {#each columns as item}
-                <th>{item.name}</th>
+            {#each columns as column}
+                {#if !column.hidden}
+                    <th>{column.name}</th>
+                {/if}
             {/each}
         </tr>
     </thead>

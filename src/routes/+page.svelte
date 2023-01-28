@@ -1,21 +1,81 @@
 <script lang="ts">
     import { DataTable, DataTableFilter } from '$components/DataTable';
     import type { Column, Styles } from '$components/DataTable';
-    import type { Device, DeviceDefinition } from '$lib/types';
+    import type { Device } from '$lib/types';
     import { device_available, device_states, devices, bridge_info } from '$lib/stores';
+    import * as timeago from 'timeago.js';
 
-    const columns: Column[] = [
+    $: avail = $bridge_info?.config.availability !== undefined;
+    $: seen =
+        $bridge_info?.config.advanced.last_seen &&
+        $bridge_info.config.advanced.last_seen !== 'disable';
+
+    $: states = $device_states;
+    $: dev_avail = $device_available;
+
+    function renderStatus(device: Device): string {
+        let html = '';
+        if (avail) {
+            const online = dev_avail[device.friendly_name];
+            if (online !== undefined) {
+                if (online) {
+                    html = '<span class="text-success-600">Online</span><br>';
+                } else {
+                    html = '<span class="text-error-500">Offline</span><br>';
+                }
+            } else {
+                html = 'N/A<br>';
+            }
+        }
+        if (seen) {
+            if (states[device.friendly_name]?.last_seen) {
+                html += timeago.format(states[device.friendly_name]!.last_seen);
+            } else {
+                html += 'N/A';
+            }
+        }
+        return html;
+    }
+
+    let columns: Column[];
+    $: columns = [
         {
-            name: 'Name',
-            id: 'friendly_name',
-            render_html: (cell: Device) => `<a href="/devices/${cell}">${cell}</a>`,
+            name: 'Device',
+            id: '',
+            render_html: (cell: Device) => {
+                return `<a href="/devices/${cell.friendly_name}">${cell.friendly_name}</a><br>${cell.definition.vendor} / ${cell.definition.model}`;
+            },
             sort: true,
         },
         {
-            name: 'Make / Model',
-            id: 'definition',
-            render_html: (cell: DeviceDefinition) => `${cell.vendor}<br>${cell.model}`,
+            name: 'Status',
+            id: '',
             sort: true,
+            hidden: !(seen || avail),
+            render_html: (device: Device) => {
+                // Placing this code in a function "hides" the reactivity
+                let html = '';
+                if (avail) {
+                    const online = dev_avail[device.friendly_name];
+                    if (online !== undefined) {
+                        if (online) {
+                            html = '<span class="text-success-600">Online</span><br>';
+                        } else {
+                            html = '<span class="text-error-500">Offline</span><br>';
+                        }
+                    } else {
+                        html = 'N/A<br>';
+                    }
+                }
+                if (seen) {
+                    if (states[device.friendly_name]?.last_seen) {
+                        html += timeago.format(states[device.friendly_name].last_seen!);
+                    } else {
+                        html += 'N/A';
+                    }
+                }
+                return html;
+            },
         },
         {
             name: 'Address',
@@ -30,48 +90,13 @@
         },
     ];
 
-    const avail = $bridge_info?.config.availability !== undefined;
-    const seen =
-        $bridge_info?.config.advanced.last_seen &&
-        $bridge_info.config.advanced.last_seen !== 'disable';
-    if (seen || avail) {
-        const column = {
-            name: 'Status',
-            id: '',
-            render_html: (cell: Device) => {
-                let html = '';
-                if (avail) {
-                    const online = $device_available[cell.friendly_name];
-                    if (online !== undefined) {
-                        if (online) {
-                            html = '<span class="text-success-600">Online</span><br>';
-                        } else {
-                            html = '<span class="text-error-500">Offline</span><br>';
-                        }
-                    } else {
-                        html = 'N/A<br>';
-                    }
-                }
-                if (seen) {
-                    if ($device_states[cell.friendly_name]?.last_seen) {
-                        html += $device_states[cell.friendly_name]!.last_seen;
-                    } else {
-                        html += 'N/A';
-                    }
-                }
-                return html;
-            },
-        };
-        columns.splice(2, 0, column);
-    }
+    $: data = $devices.filter((device) => device.type !== 'Coordinator');
 
     const tableSelector = '#myTable';
     const styles: Styles = {
         container: 'table-container mt-4',
         table: 'table table-hover',
     };
-
-    $: data = $devices.filter((device) => device.type !== 'Coordinator');
 </script>
 
 <DataTableFilter {tableSelector} />

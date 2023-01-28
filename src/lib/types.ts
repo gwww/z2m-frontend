@@ -8,7 +8,9 @@ export interface Dictionary<T> {
 
 export type GenericObject = Record<string, unknown>;
 
-export type DeviceState = GenericObject | undefined;
+export interface DeviceState {
+    last_seen?: string;
+}
 
 export type DeviceType = 'Router' | 'Coordinator' | 'EndDevice';
 

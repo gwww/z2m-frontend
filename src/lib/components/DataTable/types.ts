@@ -4,6 +4,7 @@ export interface Column {
     render?(cell: any): string;
     render_html?(cell: any): string;
     sort?: boolean;
+    hidden?: boolean;
 }
 
 export interface Styles {
