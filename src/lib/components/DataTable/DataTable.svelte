@@ -21,6 +21,9 @@
                                     <td>{column.render(value)}</td>
                                 {:else if column.render_html}
                                     <td>{@html column.render_html(value)}</td>
+                                {:else if column.component}
+                                    {@const c = column.component(value)}
+                                    <td><svelte:component this={c.comp} {...c.props} /></td>
                                 {:else}
                                     <td>{value}</td>
                                 {/if}
@@ -32,6 +35,9 @@
                                     <td>{column.render(value)}</td>
                                 {:else if column.render_html}
                                     <td>{@html column.render_html(value)}</td>
+                                {:else if column.component}
+                                    {@const c = column.component(value)}
+                                    <td><svelte:component this={c.comp} {...c.props} /></td>
                                 {:else}
                                     <td>{value}</td>
                                 {/if}

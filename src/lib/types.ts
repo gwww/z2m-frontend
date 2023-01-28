@@ -8,8 +8,11 @@ export interface Dictionary<T> {
 
 export type GenericObject = Record<string, unknown>;
 
+export type PowerSource = "Battery" | "DC Source" | "Mains (single phase)";
+
 export interface DeviceState {
     last_seen?: string;
+    battery?: number;
 }
 
 export type DeviceType = 'Router' | 'Coordinator' | 'EndDevice';
@@ -32,7 +35,7 @@ export interface Device {
     network_address: number;
     interview_completed: boolean;
     interviewing: boolean;
-    power_source: string;
+    power_source: PowerSource;
     software_build_id: string;
     supported: boolean;
     type: DeviceType;

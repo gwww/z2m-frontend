@@ -4,6 +4,7 @@
     import type { Device } from '$lib/types';
     import { device_available, device_states, devices, bridge_info } from '$lib/stores';
     import * as timeago from 'timeago.js';
+    import { PowerStatus } from '$components/PowerStatus';
 
     $: avail = $bridge_info?.config.availability !== undefined;
     $: seen =
@@ -13,37 +14,14 @@
     $: states = $device_states;
     $: dev_avail = $device_available;
 
-    function renderStatus(device: Device): string {
-        let html = '';
-        if (avail) {
-            const online = dev_avail[device.friendly_name];
-            if (online !== undefined) {
-                if (online) {
-                    html = '<span class="text-success-600">Online</span><br>';
-                } else {
-                    html = '<span class="text-error-500">Offline</span><br>';
-                }
-            } else {
-                html = 'N/A<br>';
-            }
-        }
-        if (seen) {
-            if (states[device.friendly_name]?.last_seen) {
-                html += timeago.format(states[device.friendly_name]!.last_seen);
-            } else {
-                html += 'N/A';
-            }
-        }
-        return html;
-    }
-
     let columns: Column[];
     $: columns = [
         {
             name: 'Device',
             id: '',
             render_html: (cell: Device) => {
-                return `<a href="/devices/${cell.friendly_name}">${cell.friendly_name}</a><br>${cell.definition.vendor} / ${cell.definition.model}`;
+                return `<a href="/devices/${cell.friendly_name}">${cell.friendly_name}</a><br>\
+                    ${cell.definition.vendor} / ${cell.definition.model}`;
             },
             sort: true,
         },
@@ -78,14 +56,23 @@
             },
         },
         {
-            name: 'Address',
+            name: 'Power',
             id: '',
-            render_html: (cell: Device) => `${cell.ieee_address}<br>${cell.network_address}`,
+            component: (device: Device) => {
+                return {
+                    comp: PowerStatus,
+                    props: {
+                        powerSource: device.power_source,
+                        powerLevel: states[device.friendly_name].battery,
+                    },
+                };
+            },
             sort: true,
         },
         {
-            name: 'Power',
-            id: 'power_source',
+            name: 'Address',
+            id: '',
+            render_html: (cell: Device) => `${cell.ieee_address}<br>${cell.network_address}`,
             sort: true,
         },
     ];
