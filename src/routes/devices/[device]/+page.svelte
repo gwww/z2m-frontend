@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { SvgIcon } from '$components/SvgIcon';
-    import { mdiCloseCircle, mdiSquareEditOutline } from '@mdi/js';
     import { writable } from 'svelte/store';
     import { page } from '$app/stores';
     import { devices, device_states } from '$lib/stores';
@@ -38,19 +36,14 @@
 
             <div>
                 <h1 class="group my-2 !text-4xl !font-medium text-center sm:text-left">
-                    <a href="/"
-                        ><SvgIcon
-                            class="text-tertiary-500 inline-block align-middle mr-2 mb-1 invisible group-hover:visible"
-                            path={mdiSquareEditOutline}
-                        /></a
-                    >{name}
+                    <!-- prettier-ignore -->
+                    <a href="/" class="mr-2"><div 
+                        class="i-mdi-square-edit-outline !h-[24px] !w-[24px] text-tertiary-500 mb-1 invisible group-hover:visible" /></a>{name}
                 </h1>
                 <p class="group my-2 text-center sm:text-left">
-                    <a href="/"
-                        ><SvgIcon
-                            class="text-tertiary-500 inline-block align-middle mr-2 mb-1 invisible group-hover:visible"
-                            path={mdiSquareEditOutline}
-                        /></a
+                    <!-- prettier-ignore -->
+                    <a href="/" class="mr-2"><div
+                        class="i-mdi-square-edit-outline !h-[24px] !w-[24px] text-tertiary-500 mb-1 invisible group-hover:visible" /></a
                     >Some description text that can be fairly long.
                 </p>
             </div>
@@ -66,7 +59,7 @@
         >
             <Tab value="a">
                 <svelte:fragment slot="lead">
-                    <SvgIcon path={mdiCloseCircle} />
+                    <div class="i-mdi-close-circle" />
                 </svelte:fragment>
                 State
             </Tab>

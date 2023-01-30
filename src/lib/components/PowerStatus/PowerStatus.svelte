@@ -1,36 +1,19 @@
 <script lang="ts">
     import type { PowerSource } from '$lib/types';
-    import { SvgIcon } from '$components/SvgIcon';
     import { tooltip } from '@skeletonlabs/skeleton';
-    import {
-        mdiBatteryOutline,
-        mdiBattery10,
-        mdiBattery20,
-        mdiBattery30,
-        mdiBattery40,
-        mdiBattery50,
-        mdiBattery60,
-        mdiBattery70,
-        mdiBattery80,
-        mdiBattery90,
-        mdiBattery,
-        mdiPowerPlug,
-        mdiCurrentDc,
-        mdiPower,
-    } from '@mdi/js';
 
     const batteries = [
-        [mdiBatteryOutline, 'red'],
-        [mdiBattery10, 'red'],
-        [mdiBattery20, 'red'],
-        [mdiBattery30, 'yellow'],
-        [mdiBattery40, 'yellow'],
-        [mdiBattery50, 'green'],
-        [mdiBattery60, 'green'],
-        [mdiBattery70, 'green'],
-        [mdiBattery80, 'green'],
-        [mdiBattery90, 'green'],
-        [mdiBattery, 'green'],
+        ['i-mdi-battery-outline', 'red'],
+        ['i-mdi-battery-10', 'red'],
+        ['i-mdi-battery-20', 'red'],
+        ['i-mdi-battery-30', 'yellow'],
+        ['i-mdi-battery-40', 'yellow'],
+        ['i-mdi-battery-50', 'green'],
+        ['i-mdi-battery-60', 'green'],
+        ['i-mdi-battery-70', 'green'],
+        ['i-mdi-battery-80', 'green'],
+        ['i-mdi-battery-90', 'green'],
+        ['i-mdi-battery', 'green'],
     ];
 
     export let powerSource: PowerSource;
@@ -41,7 +24,7 @@
     let tooltip_value = powerSource as string;
     if (powerSource === 'Battery') {
         if (powerLevel === undefined || powerLevel < 0 || powerLevel > 100) {
-            icon = mdiBattery;
+            icon = 'i-mdi-battery';
         } else {
             const p = Math.round(powerLevel / 10);
             icon = batteries[p][0];
@@ -49,17 +32,14 @@
             tooltip_value += `: ${powerLevel}%`;
         }
     } else if (powerSource === 'Mains (single phase)') {
-        icon = mdiPowerPlug;
+        icon = 'i-mdi-power-plug';
     } else if (powerSource === 'DC Source') {
-        icon = mdiCurrentDc;
+        icon = 'i-mdi-current-dc';
     } else {
-        icon = mdiPower;
+        icon = 'i-mdi-power';
     }
 </script>
 
 <button use:tooltip={{ content: tooltip_value, position: 'top' }} style="color: {colour}">
-    <SvgIcon size={27} path={icon} />
+    <div class={icon} />
 </button>
-
-<style>
-</style>
