@@ -1,33 +1,34 @@
 <script lang="ts">
     import { SvgIcon } from '$components/SvgIcon';
-    import { mdiCloseCircle, mdiCheckCircle } from '@mdi/js';
+    import { mdiCloseCircle, mdiSquareEditOutline } from '@mdi/js';
     import { writable } from 'svelte/store';
     import { page } from '$app/stores';
     import { devices, device_states } from '$lib/stores';
     import type { Device, DeviceState } from '$lib/types';
     import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 
-    let storeThree = writable('a');
+    let storeThree = writable('c');
 
     const key = $page.params.device;
     let name = key;
     $: device = $devices.find((dev: Device) => dev.friendly_name === key);
     $: device_state = $device_states[key as keyof DeviceState];
 
-    const image = 'https://www.zigbee2mqtt.io/images/devices/LED2003G10.jpg';
-    let fallback = '/images/zigbee-logo.png';
-    const handleError = (e: Event) => ((<HTMLImageElement>e.target).src = fallback);
-
-    function nameInput() {
-        if (name !== key) {
-            console.log('name changed ', name);
-        }
+    let image: string;
+    $: if (device) {
+        image = `https://www.zigbee2mqtt.io/images/devices/${device.definition.model.replace(
+            '/',
+            '-'
+        )}.jpg`;
     }
+    let fallback = '/images/zigbee-logo.png';
+
+    const handleError = (e: Event) => ((<HTMLImageElement>e.target).src = fallback);
 </script>
 
 {#if device}
     <div class="card p-4 space-y-4">
-        <div class="flex flex-wrap gap-8 justify-center items-center">
+        <div class="flex flex-wrap gap-4 justify-center items-center flex-col sm:flex-row">
             <img
                 class="h-24 sm:h-32 border-slate-400 rounded-xl border-4"
                 src={image}
@@ -35,42 +36,23 @@
                 on:error={handleError}
             />
 
-            <div class="flex-auto">
-                <label class="input-label">
-                    <span class="text-sm text-surface-500 pl-2">Friendly name</span>
-                    <div class="grid grid-cols-[1fr_auto_auto] !m-1">
-                        <input
-                            class="text-2xl"
-                            type="text"
-                            bind:value={name}
-                            placeholder="Name..."
-                            on:keyup={nameInput}
-                        />
-                        <div class="flex items-center">
-                            <button class="text-error-500 ml-1 hover:brightness-[1.15]">
-                                <SvgIcon size={36} path={mdiCloseCircle} />
-                            </button>
-                            <button class="text-success-600 ml-1 hover:brightness-[1.15]">
-                                <SvgIcon size={36} path={mdiCheckCircle} />
-                            </button>
-                        </div>
-                    </div>
-                </label>
-
-                <label class="input-label">
-                    <span class="text-sm text-surface-500 pl-2">Description</span>
-                    <div class="grid grid-cols-[1fr_auto_auto] !m-1">
-                        <input type="text" placeholder="Description..." />
-                        <div class="flex items-center">
-                            <span class="text-error-500 ml-1">
-                                <SvgIcon size={36} path={mdiCloseCircle} />
-                            </span>
-                            <span class="text-success-500 ml-0">
-                                <SvgIcon size={36} path={mdiCheckCircle} />
-                            </span>
-                        </div>
-                    </div>
-                </label>
+            <div>
+                <h1 class="group my-2 !text-4xl !font-medium text-center sm:text-left">
+                    <a href="/"
+                        ><SvgIcon
+                            class="text-tertiary-500 inline-block align-middle mr-2 mb-1 invisible group-hover:visible"
+                            path={mdiSquareEditOutline}
+                        /></a
+                    >{name}
+                </h1>
+                <p class="group my-2 text-center sm:text-left">
+                    <a href="/"
+                        ><SvgIcon
+                            class="text-tertiary-500 inline-block align-middle mr-2 mb-1 invisible group-hover:visible"
+                            path={mdiSquareEditOutline}
+                        /></a
+                    >Some description text that can be fairly long.
+                </p>
             </div>
         </div>
 
