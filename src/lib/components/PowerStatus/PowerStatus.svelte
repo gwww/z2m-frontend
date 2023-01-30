@@ -41,5 +41,5 @@
 </script>
 
 <button use:tooltip={{ content: tooltip_value, position: 'top' }} style="color: {colour}">
-    <div class={icon} />
+    <div class="{icon} text-2xl" />
 </button>
