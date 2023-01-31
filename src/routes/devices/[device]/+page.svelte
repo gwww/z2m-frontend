@@ -37,14 +37,15 @@
             <div>
                 <h1 class="group my-2 !text-4xl !font-medium text-center sm:text-left">
                     <!-- prettier-ignore -->
-                    <a href="/" class="mr-2"><div 
-                        class="i-mdi-square-edit-outline !h-[24px] !w-[24px] text-tertiary-500 mb-1 invisible group-hover:visible" /></a>{name}
+                    <button class="mr-2 text-tertiary-500 mb-1">
+                        <div class="i-mdi-square-edit-outline !h-[24px] !w-[24px] invisible group-hover:visible" />
+                    </button>{name}
                 </h1>
                 <p class="group my-2 text-center sm:text-left">
                     <!-- prettier-ignore -->
-                    <a href="/" class="mr-2"><div
-                        class="i-mdi-square-edit-outline !h-[24px] !w-[24px] text-tertiary-500 mb-1 invisible group-hover:visible" /></a
-                    >Some description text that can be fairly long.
+                    <button class="mr-2 text-tertiary-500 mb-1">
+                        <div class="i-mdi-square-edit-outline !h-[24px] !w-[24px] invisible group-hover:visible" />
+                    </button>Some description text that can be fairly long.
                 </p>
             </div>
         </div>
