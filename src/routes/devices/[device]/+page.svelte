@@ -4,6 +4,9 @@
     import { devices, device_states } from '$lib/stores';
     import type { Device, DeviceState } from '$lib/types';
     import { TabGroup, Tab } from '@skeletonlabs/skeleton';
+    import { Modal, modalStore } from '@skeletonlabs/skeleton';
+    import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
+    import EditFriendlyName from './EditFriendlyName.svelte';
 
     let storeThree = writable('c');
 
@@ -21,6 +24,25 @@
     }
     let fallback = '/images/zigbee-logo.png';
 
+    function modalComponentForm(): void {
+        const c: ModalComponent = {
+            ref: EditFriendlyName,
+            props: { name: name },
+        };
+        const d: ModalSettings = {
+            type: 'component',
+            title: 'Edit device name',
+            // body: 'Complete the form below and then press submit.',
+            component: c,
+            response: (r: any) => {
+                if (r) {
+                    name = r.name;
+                }
+            },
+        };
+        modalStore.trigger(d);
+    }
+
     const handleError = (e: Event) => ((<HTMLImageElement>e.target).src = fallback);
 </script>
 
@@ -37,7 +59,7 @@
             <div>
                 <h1 class="group my-2 !text-4xl !font-medium text-center sm:text-left">
                     <!-- prettier-ignore -->
-                    <button class="mr-2 text-tertiary-500 mb-1">
+                    <button class="mr-2 text-tertiary-500 mb-1" on:click={modalComponentForm}>
                         <div class="i-mdi-square-edit-outline !h-[24px] !w-[24px] invisible group-hover:visible" />
                     </button>{name}
                 </h1>
