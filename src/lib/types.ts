@@ -8,7 +8,7 @@ export interface Dictionary<T> {
 
 export type GenericObject = Record<string, unknown>;
 
-export type PowerSource = "Battery" | "DC Source" | "Mains (single phase)";
+export type PowerSource = 'Battery' | 'DC Source' | 'Mains (single phase)';
 
 export interface DeviceState {
     last_seen?: string;

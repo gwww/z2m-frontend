@@ -1,4 +1,4 @@
-import type { ComponentProps, ComponentType, } from "svelte";
+import type { ComponentProps, ComponentType } from 'svelte';
 
 export interface Component {
     comp: ComponentType;

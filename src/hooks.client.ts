@@ -1,1 +1,1 @@
-import { MQTT } from '$lib/mqtt'
+import { MQTT } from '$lib/mqtt';
