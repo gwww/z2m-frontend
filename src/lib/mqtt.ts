@@ -2,6 +2,7 @@
 import mqtt_client from 'u8-mqtt/esm/web/index'
 import type { BridgeInfo, Device, DeviceState, Dictionary, GenericObject } from '$lib/types';
 import { mqtt_env } from '../mqtt_env.js'; // Private file with credentials in it
+import { browser } from '$app/environment';
 
 // import { bridge_info, devices, device_available, device_states } from '$lib/stores';
 import { writable, type Writable } from 'svelte/store';
@@ -9,8 +10,6 @@ export const bridge_info: Writable<BridgeInfo | undefined> = writable()
 export const devices: Writable<Device[]> = writable([]);
 export const device_states: Writable<Dictionary<DeviceState>> = writable({});
 export const device_available: Writable<Dictionary<boolean>> = writable({});
-
-import { browser } from '$app/environment';
 
 export interface MQTTAuth {
   username: string;
@@ -100,4 +99,3 @@ if (browser) {
     password: mqtt_env.password,
   })
 }
-
