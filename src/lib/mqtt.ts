@@ -1,33 +1,48 @@
 // @ts-ignore
 import mqtt_client from 'u8-mqtt/esm/web/index';
 import type { BridgeInfo, Device, DeviceState, Dictionary, GenericObject } from '$lib/types';
-import { mqtt_env } from '../mqtt_env.js'; // Private file with credentials in it
-import { browser } from '$app/environment';
 
-// import { bridge_info, devices, device_available, device_states } from '$lib/stores';
 import { writable, type Writable } from 'svelte/store';
 export const bridge_info: Writable<BridgeInfo | undefined> = writable();
 export const devices: Writable<Device[]> = writable([]);
 export const device_states: Writable<Dictionary<DeviceState>> = writable({});
 export const device_available: Writable<Dictionary<boolean>> = writable({});
+export const mqtt: Writable<MQTT_handler | undefined> = writable()
 
 export interface MQTTAuth {
     username: string;
     password: string;
 }
+type U8Mqtt = any;
 
-export class MQTT {
-    mqtt: any;
 
-    constructor(mqtt_server: string) {
-        this.mqtt = mqtt_client().with_websock(mqtt_server).with_autoreconnect();
+export class MQTT_handler {
+    mqtt: U8Mqtt;
+    server: string;
+    auth: MQTTAuth | undefined;
+
+    constructor(mqtt_server: string, auth: MQTTAuth | undefined = undefined) {
+        this.server = mqtt_server;
+        this.auth = auth;
+        this.mqtt = mqtt_client({
+            on_live: (client: U8Mqtt, is_reconnect: boolean) => {
+                if (is_reconnect) {
+                    this.connect()
+                }
+            },
+        })
+            .with_websock(this.server)
+            .with_autoreconnect(2500,
+                () => { console.log('reconnect in auto reconnect') },
+                () => { console.log('error in auto reconnect') }
+            )
     }
 
-    async connect(auth: MQTTAuth | undefined = undefined) {
-        await this.mqtt.connect(auth);
-
+    async connect() {
+        console.log('MQTT connect')
+        await this.mqtt.connect(this.auth);
+        console.log('MQTT connected!')
         this.mqtt.subscribe('zigbee2mqtt/#');
-
         this.mqtt
             .on_topic(
                 'zigbee2mqtt/bridge/:cmd',
@@ -55,13 +70,13 @@ export class MQTT {
         ctx: any,
         handler: (decoded: any, params: Dictionary<string>) => void
     ) {
-        // console.log(pkt.topic, params)
+        console.log(pkt.topic, params)
         ctx.done = true;
         try {
             const json_msg = pkt.json();
             handler(json_msg, params);
         } catch {
-            handler(new TextDecoder().decode(pkt.payload), params);
+            handler(pkt.text(), params);
         }
     }
 
@@ -99,12 +114,4 @@ export class MQTT {
     unhandled_pkt(pkt: any, params: Dictionary<string>) {
         console.log('unhandled packet:', params, pkt);
     }
-}
-
-if (browser) {
-    const mqtt = new MQTT(mqtt_env.server);
-    mqtt.connect({
-        username: mqtt_env.user,
-        password: mqtt_env.password,
-    });
 }
