@@ -1,7 +1,8 @@
 <script lang="ts">
     import { writable } from 'svelte/store';
     import { page } from '$app/stores';
-    import { devices, device_states } from '$lib/stores';
+    import { devices, device_states } from '$lib/mqtt';
+    // import { devices, device_states } from '$lib/stores';
     import type { Device, DeviceState } from '$lib/types';
     import { TabGroup, Tab } from '@skeletonlabs/skeleton';
     import { Modal, modalStore } from '@skeletonlabs/skeleton';

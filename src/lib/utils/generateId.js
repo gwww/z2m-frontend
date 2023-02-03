@@ -1,5 +1,5 @@
 let n = Date.now();
 
-export default function () {
-    return (++n).toString(36);
+export default function(prefix = 'tx-') {
+    return prefix + (++n).toString(36);
 }

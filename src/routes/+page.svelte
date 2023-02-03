@@ -2,7 +2,8 @@
     import { DataTable, DataTableFilter } from '$components/DataTable';
     import type { Column, Styles } from '$components/DataTable';
     import type { Device } from '$lib/types';
-    import { device_available, device_states, devices, bridge_info } from '$lib/stores';
+    import { device_available, device_states, devices, bridge_info } from '$lib/mqtt';
+    // import { device_available, device_states, devices, bridge_info } from '$lib/stores';
     import * as timeago from 'timeago.js';
     import { PowerStatus } from '$components/PowerStatus';
 
