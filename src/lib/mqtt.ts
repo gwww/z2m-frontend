@@ -25,23 +25,18 @@ export class MQTT_handler {
         this.server = mqtt_server;
         this.auth = auth;
         this.mqtt = mqtt_client({
-            on_live: (client: U8Mqtt, is_reconnect: boolean) => {
+            on_live: (_: U8Mqtt, is_reconnect: boolean) => {
                 if (is_reconnect) {
                     this.connect()
                 }
             },
         })
             .with_websock(this.server)
-            .with_autoreconnect(2500,
-                () => { console.log('reconnect in auto reconnect') },
-                () => { console.log('error in auto reconnect') }
-            )
+            .with_autoreconnect(5000)
     }
 
     async connect() {
-        console.log('MQTT connect')
         await this.mqtt.connect(this.auth);
-        console.log('MQTT connected!')
         this.mqtt.subscribe('zigbee2mqtt/#');
         this.mqtt
             .on_topic(
