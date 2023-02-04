@@ -1,6 +1,7 @@
 // @ts-ignore
 import mqtt_client from 'u8-mqtt/esm/web/index';
 import type { BridgeInfo, Device, DeviceState, Dictionary, GenericObject } from '$lib/types';
+import generateId from '$lib/utils/generateId'
 
 import { writable, type Writable } from 'svelte/store';
 export const bridge_info: Writable<BridgeInfo | undefined> = writable();
@@ -14,7 +15,6 @@ export interface MQTTAuth {
     password: string;
 }
 type U8Mqtt = any;
-
 
 export class MQTT_handler {
     mqtt: U8Mqtt;
@@ -68,10 +68,13 @@ export class MQTT_handler {
         console.log(pkt.topic, params)
         ctx.done = true;
         try {
-            const json_msg = pkt.json();
-            handler(json_msg, params);
+            handler(pkt.json(), params);
         } catch {
-            handler(pkt.text(), params);
+            try {
+                handler(pkt.text(), params);
+            } catch {
+                // Either a bad packet or one the we don't know how to decode; ignore it.
+            }
         }
     }
 
@@ -109,4 +112,29 @@ export class MQTT_handler {
     unhandled_pkt(pkt: any, params: Dictionary<string>) {
         console.log('unhandled packet:', params, pkt);
     }
+}
+
+let my_mqtt: MQTT_handler;
+export function set_client(client: MQTT_handler) {
+    my_mqtt = client;
+}
+
+export async function rename(from: string, to: string, home_assistant_rename: boolean) {
+    console.log('MQTT rename:', from, to, home_assistant_rename)
+    await my_mqtt.mqtt.json_send(
+        'zigbee2mqtt/bridge/request/device/rename',
+        { from, to, home_assistant_rename, transaction: generateId() }
+    )
+}
+
+export async function set_description(id: string, from: string, to: string) {
+    console.log('MQTT set_description:', id, from, to)
+    await my_mqtt.mqtt.json_send(
+        'zigbee2mqtt/bridge/response/device/options',
+        {
+            "id": "Aqara NEW TEST",
+            "from": { "description": from, "legacy": true, "retain": true },
+            "to": { "description": to, "legacy": true, "retain": true },
+        }
+    )
 }

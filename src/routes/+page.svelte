@@ -21,7 +21,7 @@
             name: 'Device',
             id: '',
             render_html: (cell: Device) => {
-                return `<a href="/devices/${cell.friendly_name}">${cell.friendly_name}</a><br>\
+                return `<a href="/devices/${cell.ieee_address}">${cell.friendly_name}</a><br>\
                     ${cell.definition.vendor} / ${cell.definition.model}`;
             },
             sort: true,

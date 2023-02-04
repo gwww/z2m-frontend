@@ -3,21 +3,24 @@
     import { page } from '$app/stores';
     import { devices, device_states } from '$lib/mqtt';
     // import { devices, device_states } from '$lib/stores';
+    import * as MQTT from '$lib/mqtt';
     import type { Device, DeviceState } from '$lib/types';
     import { TabGroup, Tab } from '@skeletonlabs/skeleton';
-    import { Modal, modalStore } from '@skeletonlabs/skeleton';
+    import { modalStore } from '@skeletonlabs/skeleton';
     import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
     import EditFriendlyName from './EditFriendlyName.svelte';
 
     let storeThree = writable('c');
 
     const key = $page.params.device;
-    let name = key;
-    $: device = $devices.find((dev: Device) => dev.friendly_name === key);
+    $: device = $devices.find((dev: Device) => dev.ieee_address === key);
     $: device_state = $device_states[key as keyof DeviceState];
 
+    let name: string;
     let image: string;
+
     $: if (device) {
+        name = device.friendly_name;
         image = `https://www.zigbee2mqtt.io/images/devices/${device.definition.model.replace(
             '/',
             '-'
@@ -37,6 +40,7 @@
             component: c,
             response: (r: any) => {
                 if (r) {
+                    MQTT.rename(name, r.name, false);
                     name = r.name;
                 }
             },
