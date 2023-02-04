@@ -1,15 +1,18 @@
 <script lang="ts">
-    import { writable } from 'svelte/store';
-    import { page } from '$app/stores';
-    import { devices, device_states } from '$lib/mqtt';
-    // import { devices, device_states } from '$lib/stores';
-    import * as MQTT from '$lib/mqtt';
-    import type { Device, DeviceState } from '$lib/types';
+    import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
     import { TabGroup, Tab } from '@skeletonlabs/skeleton';
     import { modalStore } from '@skeletonlabs/skeleton';
-    import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
-    import EditFriendlyName from './EditFriendlyName.svelte';
 
+    import { page } from '$app/stores';
+
+    import { devices, device_states } from '$lib/mqtt';
+    import * as MQTT from '$lib/mqtt';
+    import type { Device, DeviceState } from '$lib/types';
+
+    import EditFriendlyName from './EditFriendlyName.svelte';
+    import DeviceImage from './DeviceImage.svelte';
+
+    import { writable } from 'svelte/store';
     let storeThree = writable('c');
 
     const key = $page.params.device;
@@ -17,16 +20,9 @@
     $: device_state = $device_states[key as keyof DeviceState];
 
     let name: string;
-    let image: string;
-
     $: if (device) {
         name = device.friendly_name;
-        image = `https://www.zigbee2mqtt.io/images/devices/${device.definition.model.replace(
-            '/',
-            '-'
-        )}.jpg`;
     }
-    let fallback = '/images/zigbee-logo.png';
 
     function modalComponentForm(): void {
         const c: ModalComponent = {
@@ -47,26 +43,19 @@
         };
         modalStore.trigger(d);
     }
-
-    const handleError = (e: Event) => ((<HTMLImageElement>e.target).src = fallback);
 </script>
 
 {#if device}
     <div class="card p-4 space-y-4">
         <div class="flex flex-wrap gap-4 justify-center items-center flex-col sm:flex-row">
-            <img
-                class="h-24 sm:h-32 border-slate-400 rounded-xl border-4"
-                src={image}
-                alt=""
-                on:error={handleError}
-            />
+            <DeviceImage image={device.definition.model} />
 
             <div>
                 <h1 class="group my-2 !text-4xl !font-medium text-center sm:text-left">
                     <!-- prettier-ignore -->
                     <button class="mr-2 text-tertiary-500 mb-1" on:click={modalComponentForm}>
                         <div class="i-mdi-square-edit-outline !h-[24px] !w-[24px] invisible group-hover:visible" />
-                    </button>{name}
+                    </button>{device.friendly_name}
                 </h1>
                 <p class="group my-2 text-center sm:text-left">
                     <!-- prettier-ignore -->
