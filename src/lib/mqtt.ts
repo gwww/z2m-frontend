@@ -24,19 +24,22 @@ export class MQTT_handler {
     constructor(mqtt_server: string, auth: MQTTAuth | undefined = undefined) {
         this.server = mqtt_server;
         this.auth = auth;
-        this.mqtt = mqtt_client({
-            on_live: (_: U8Mqtt, is_reconnect: boolean) => {
-                if (is_reconnect) {
-                    this.connect()
-                }
-            },
-        })
+        this.mqtt = mqtt_client({ on_live: this.on_live.bind(this) })
             .with_websock(this.server)
             .with_autoreconnect(5000)
     }
 
+    async on_live(_: U8Mqtt, is_reconnect: boolean) {
+        if (is_reconnect) {
+            console.log('reconnecting...')
+            await this.connect()
+        }
+    }
+
     async connect() {
+        console.log('connect...')
         await this.mqtt.connect(this.auth);
+        console.log('connected...')
         this.mqtt.subscribe('zigbee2mqtt/#');
         this.mqtt
             .on_topic(
@@ -65,7 +68,7 @@ export class MQTT_handler {
         ctx: any,
         handler: (decoded: any, params: Dictionary<string>) => void
     ) {
-        console.log(pkt.topic, params)
+        // console.log(pkt.topic, params)
         ctx.done = true;
         try {
             handler(pkt.json(), params);
@@ -73,7 +76,7 @@ export class MQTT_handler {
             try {
                 handler(pkt.text(), params);
             } catch {
-                // Either a bad packet or one the we don't know how to decode; ignore it.
+                // Either a bad packet or one that we don't know how to decode; ignore it.
             }
         }
     }
@@ -138,3 +141,37 @@ export async function set_description(id: string, from: string, to: string) {
         }
     )
 }
+
+// Experimental //////////////////
+// export class awaitMQTTResponse {
+//     promise: Promise<any>;
+//     resolve: any;
+//
+//     constructor(msg: any, timeout: number = 5000) {
+//         this.promise = new Promise((resolve, reject) => {
+//             setTimeout(() => {
+//                 reject('Timeout!!!');
+//             }, timeout);
+//             this.resolve = resolve;
+//         });
+//     }
+// }
+//
+// function asyncAction() {
+//     var dfd = new awaitMQTTResponse('foo', 100);
+//
+//     setTimeout(() => {
+//         dfd.resolve(42);
+//     }, Math.floor(Math.random() * 150));
+//
+//     return dfd.promise;
+// }
+//
+// asyncAction().then(
+//     (result) => {
+//         console.log(result);
+//     },
+//     (result) => {
+//         console.log(result);
+//     }
+// );
