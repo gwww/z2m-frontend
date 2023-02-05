@@ -3,8 +3,8 @@
     import { page } from '$app/stores';
 
     import { bridge_info, devices, device_states } from '$lib/mqtt';
-    import * as MQTT from '$lib/mqtt';
     import type { Device, DeviceState, Dictionary } from '$lib/types';
+    // import * as MQTT from '$lib/mqtt';
 
     import EditFriendlyName from './EditFriendlyName.svelte';
     import EditDescription from './EditDescription.svelte';
@@ -17,7 +17,7 @@
     const key = $page.params.device;
     $: device_model = $devices.find((dev: Device) => dev.ieee_address === key);
     $: device = $bridge_info?.config?.devices[key];
-    $: device_state = $device_states[key as keyof DeviceState];
+    // $: device_state = $device_states[key as keyof DeviceState];
 
     function updateFriendlyname(response: Dictionary<string>) {
         console.log('updateFriendlyname', response);
@@ -48,7 +48,7 @@
                         title="Edit description"
                         props={{ description: device.description || '' }}
                         onsave={updateDescription}
-                    />{device.description || ''}
+                    />{device.description || 'Default description text...'}
                 </p>
             </div>
         </div>
