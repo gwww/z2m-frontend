@@ -16,6 +16,7 @@ specifiers:
   eslint-config-prettier: ^8.6.0
   eslint-plugin-svelte3: ^4.0.0
   postcss: ^8.4.21
+  postcss-import: ^15.1.0
   prettier: ^2.8.3
   prettier-plugin-svelte: ^2.9.0
   svelte: ^3.55.1
@@ -49,6 +50,7 @@ devDependencies:
   eslint-config-prettier: 8.6.0_eslint@8.33.0
   eslint-plugin-svelte3: 4.0.0_4omm2ewoudhgnmf7aocafatnc4
   postcss: 8.4.21
+  postcss-import: 15.1.0_postcss@8.4.21
   prettier: 2.8.3
   prettier-plugin-svelte: 2.9.0_kdmmghgdi3ngrsq6otxkjilbry
   svelte: 3.55.1
@@ -1973,6 +1975,18 @@ packages:
   /postcss-import/14.1.0_postcss@8.4.21:
     resolution: {integrity: sha512-flwI+Vgm4SElObFVPpTIT7SU7R3qk2L7PyduMcokiaVKuWv9d/U+Gm/QAd8NDLuykTWTkcrjOeD2Pp1rMeBTGw==}
     engines: {node: '>=10.0.0'}
+    peerDependencies:
+      postcss: ^8.0.0
+    dependencies:
+      postcss: 8.4.21
+      postcss-value-parser: 4.2.0
+      read-cache: 1.0.0
+      resolve: 1.22.1
+    dev: true
+
+  /postcss-import/15.1.0_postcss@8.4.21:
+    resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
       postcss: ^8.0.0
     dependencies:
