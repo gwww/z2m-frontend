@@ -1,7 +1,7 @@
 <script lang="ts">
     import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
     import '@skeletonlabs/skeleton/styles/all.css';
-    import 'uno.css';
+    // import 'uno.css';
     import '../app.postcss';
     import { AppShell, AppBar } from '@skeletonlabs/skeleton';
     import { LightSwitch } from '@skeletonlabs/skeleton';

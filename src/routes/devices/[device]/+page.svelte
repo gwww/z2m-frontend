@@ -1,67 +1,54 @@
 <script lang="ts">
-    import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
     import { TabGroup, Tab } from '@skeletonlabs/skeleton';
-    import { modalStore } from '@skeletonlabs/skeleton';
-
     import { page } from '$app/stores';
 
-    import { devices, device_states } from '$lib/mqtt';
+    import { bridge_info, devices, device_states } from '$lib/mqtt';
     import * as MQTT from '$lib/mqtt';
-    import type { Device, DeviceState } from '$lib/types';
+    import type { Device, DeviceState, Dictionary } from '$lib/types';
 
     import EditFriendlyName from './EditFriendlyName.svelte';
+    import EditDescription from './EditDescription.svelte';
     import DeviceImage from './DeviceImage.svelte';
 
     import { writable } from 'svelte/store';
+    import EditFieldModal from './EditFieldModal.svelte';
     let storeThree = writable('c');
 
     const key = $page.params.device;
-    $: device = $devices.find((dev: Device) => dev.ieee_address === key);
+    $: device_model = $devices.find((dev: Device) => dev.ieee_address === key);
+    $: device = $bridge_info?.config?.devices[key];
     $: device_state = $device_states[key as keyof DeviceState];
 
-    let name: string;
-    $: if (device) {
-        name = device.friendly_name;
+    function updateFriendlyname(response: Dictionary<string>) {
+        console.log('updateFriendlyname', response);
     }
 
-    function modalComponentForm(): void {
-        const c: ModalComponent = {
-            ref: EditFriendlyName,
-            props: { name: name },
-        };
-        const d: ModalSettings = {
-            type: 'component',
-            title: 'Edit device name',
-            // body: 'Complete the form below and then press submit.',
-            component: c,
-            response: (r: any) => {
-                if (r) {
-                    MQTT.rename(name, r.name, false);
-                    name = r.name;
-                }
-            },
-        };
-        modalStore.trigger(d);
+    function updateDescription(response: Dictionary<string>) {
+        console.log('updateDescription', response);
     }
 </script>
 
 {#if device}
     <div class="card p-4 space-y-4">
         <div class="flex flex-wrap gap-4 justify-center items-center flex-col sm:flex-row">
-            <DeviceImage image={device.definition.model} />
+            <DeviceImage image={device_model?.definition.model || ''} />
 
             <div>
                 <h1 class="group my-2 !text-4xl !font-medium text-center sm:text-left">
-                    <!-- prettier-ignore -->
-                    <button class="mr-2 text-tertiary-500 mb-1" on:click={modalComponentForm}>
-                        <div class="i-mdi-square-edit-outline !h-[24px] !w-[24px] invisible group-hover:visible" />
-                    </button>{device.friendly_name}
+                    <EditFieldModal
+                        modalDialog={EditFriendlyName}
+                        title="Edit device name"
+                        props={{ name: device.friendly_name }}
+                        onsave={updateFriendlyname}
+                    />{device.friendly_name}
                 </h1>
                 <p class="group my-2 text-center sm:text-left">
-                    <!-- prettier-ignore -->
-                    <button class="mr-2 text-tertiary-500 mb-1">
-                        <div class="i-mdi-square-edit-outline !h-[24px] !w-[24px] invisible group-hover:visible" />
-                    </button>Some description text that can be fairly long.
+                    <EditFieldModal
+                        modalDialog={EditDescription}
+                        title="Edit description"
+                        props={{ description: device.description || '' }}
+                        onsave={updateDescription}
+                    />{device.description || ''}
                 </p>
             </div>
         </div>
