@@ -8,7 +8,8 @@ export const bridge_info: Writable<BridgeInfo | undefined> = writable();
 export const devices: Writable<Device[]> = writable([]);
 export const device_states: Writable<Dictionary<DeviceState>> = writable({});
 export const device_available: Writable<Dictionary<boolean>> = writable({});
-export const mqtt: Writable<MQTT_handler | undefined> = writable()
+
+let my_mqtt: MQTT_handler;
 
 export interface MQTTAuth {
     username: string;
@@ -27,61 +28,53 @@ export class MQTT_handler {
         this.mqtt = mqtt_client({ on_live: this.on_live.bind(this) })
             .with_websock(this.server)
             .with_autoreconnect(5000)
+        my_mqtt = this // Cannot instantiate another instance of MQTT_handler
     }
 
     async on_live(_: U8Mqtt, is_reconnect: boolean) {
-        if (is_reconnect) {
-            console.log('reconnecting...')
-            await this.connect()
-        }
-    }
-
-    async connect() {
-        console.log('connect...')
+        console.log('MQTT on_live...  reconnecting', is_reconnect || false)
         await this.mqtt.connect(this.auth);
-        console.log('connected...')
+        console.log('MQTT connected...')
         this.mqtt.subscribe('zigbee2mqtt/#');
         this.mqtt
             .on_topic(
                 'zigbee2mqtt/bridge/:cmd',
                 (pkt: any, params: Dictionary<string>, ctx: any) => {
-                    this.handle_pkt(pkt, params, ctx, this.handle_bridge_pkt);
+                    this.handle_msg(pkt, params, ctx, this.handle_bridge_msg);
                 }
             )
             .on_topic(
                 'zigbee2mqtt/:device/availability',
                 (pkt: any, params: Dictionary<string>, ctx: any) => {
-                    this.handle_pkt(pkt, params, ctx, this.handle_availability_pkt);
+                    this.handle_msg(pkt, params, ctx, this.handle_availability_msg);
                 }
             )
             .on_topic('zigbee2mqtt/:device', (pkt: any, params: Dictionary<string>, ctx: any) => {
-                this.handle_pkt(pkt, params, ctx, this.handle_state_pkt);
+                this.handle_msg(pkt, params, ctx, this.handle_state_msg);
             })
             .on_topic('zigbee2mqtt/*', (pkt: any, params: Dictionary<string>, ctx: any) => {
-                this.handle_pkt(pkt, params, ctx, this.unhandled_pkt);
+                this.handle_msg(pkt, params, ctx, this.unhandled_msg);
             });
     }
 
-    handle_pkt(
+    handle_msg(
         pkt: any,
         params: Dictionary<string>,
         ctx: any,
         handler: (decoded: any, params: Dictionary<string>) => void
     ) {
         // console.log(pkt.topic, params)
-        ctx.done = true;
+        ctx.done = true; // Stops matches on further topics
         try {
             handler(pkt.json(), params);
         } catch {
             try {
                 handler(pkt.text(), params);
-            } catch {
-                // Either a bad packet or one that we don't know how to decode; ignore it.
-            }
+            } catch { } // Either a bad packet or one that we don't know how to decode; ignore it.
         }
     }
 
-    handle_state_pkt(pkt: GenericObject, params: Dictionary<string>) {
+    handle_state_msg(pkt: GenericObject, params: Dictionary<string>) {
         // console.log('state packet json', params, pkt)
         const device_name = params['device'];
         if (device_name === 'bridge') return;
@@ -93,7 +86,7 @@ export class MQTT_handler {
         return;
     }
 
-    handle_availability_pkt(pkt: string, params: Dictionary<string>) {
+    handle_availability_msg(pkt: string, params: Dictionary<string>) {
         // console.log('avail packet binary', params, pkt)
         const device_name = params['device'];
         device_available.update((avail) => {
@@ -102,7 +95,7 @@ export class MQTT_handler {
         });
     }
 
-    handle_bridge_pkt(pkt: GenericObject, params: Dictionary<string>) {
+    handle_bridge_msg(pkt: GenericObject, params: Dictionary<string>) {
         // console.log('bridge packet json', params, pkt)
         const cmd = params['cmd'];
         if (cmd === 'devices') {
@@ -112,14 +105,9 @@ export class MQTT_handler {
         }
     }
 
-    unhandled_pkt(pkt: any, params: Dictionary<string>) {
+    unhandled_msg(pkt: any, params: Dictionary<string>) {
         console.log('unhandled packet:', params, pkt);
     }
-}
-
-let my_mqtt: MQTT_handler;
-export function set_client(client: MQTT_handler) {
-    my_mqtt = client;
 }
 
 export async function rename(from: string, to: string, home_assistant_rename: boolean) {
