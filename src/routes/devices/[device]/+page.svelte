@@ -2,9 +2,9 @@
     import { TabGroup, Tab } from '@skeletonlabs/skeleton';
     import { page } from '$app/stores';
 
+    import * as MQTT from '$lib/mqtt';
     import { bridge_info, devices, device_states } from '$lib/mqtt';
     import type { Device, DeviceState } from '$lib/types';
-    // import * as MQTT from '$lib/mqtt';
 
     import DeviceImage from './DeviceImage.svelte';
     import InlineEdit from './InlineEdit.svelte';
@@ -18,11 +18,11 @@
     $: device_state = $device_states[key as keyof DeviceState];
 
     function updateFriendlyname(response: CustomEvent<any>) {
-        console.log('updateFriendlyname', response.detail);
+        MQTT.rename(device.friendly_name, response.detail.value, response.detail.toggleChecked);
     }
 
     function updateDescription(response: CustomEvent<any>) {
-        console.log('updateDescription', response.detail);
+        MQTT.set_description(key, response.detail.value);
     }
 </script>
 

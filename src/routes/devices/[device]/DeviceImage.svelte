@@ -2,8 +2,10 @@
     export let image: string;
 
     const fallback = '/images/zigbee-logo.png';
-    const handleError = (e: Event) => ((<HTMLImageElement>e.target).src = fallback);
-    image = `https://www.zigbee2mqtt.io/images/devices/${image.replace('/', '-')}.jpg`;
+    const handleError = (e: Event) => {
+        (<HTMLImageElement>e.target).src = fallback;
+    };
+    $: image = `https://www.zigbee2mqtt.io/images/devices/${image.replace('/', '-')}.jpg`;
 </script>
 
 <img

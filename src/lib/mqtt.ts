@@ -110,24 +110,17 @@ export class MQTT_handler {
     }
 }
 
-export async function rename(from: string, to: string, home_assistant_rename: boolean) {
-    console.log('MQTT rename:', from, to, home_assistant_rename)
-    await my_mqtt.mqtt.json_send(
-        'zigbee2mqtt/bridge/request/device/rename',
-        { from, to, home_assistant_rename, transaction: generateId() }
-    )
+async function send(topic: string, payload: GenericObject) {
+    console.debug('MQTT send:', topic, payload)
+    return await my_mqtt.mqtt.json_send(`zigbee2mqtt/${topic}`, { ...payload, transaction: generateId() })
 }
 
-export async function set_description(id: string, from: string, to: string) {
-    console.log('MQTT set_description:', id, from, to)
-    await my_mqtt.mqtt.json_send(
-        'zigbee2mqtt/bridge/response/device/options',
-        {
-            "id": "Aqara NEW TEST",
-            "from": { "description": from, "legacy": true, "retain": true },
-            "to": { "description": to, "legacy": true, "retain": true },
-        }
-    )
+export async function rename(from: string, to: string, homeassistant_rename: boolean) {
+    await send('bridge/request/device/rename', { from, to, homeassistant_rename })
+}
+
+export async function set_description(id: string, description: string) {
+    await send('bridge/request/device/options', { id, "options": { description } })
 }
 
 // Experimental //////////////////
