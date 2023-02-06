@@ -1,24 +1,21 @@
 <script lang="ts">
-    import { SlideToggle, TabGroup, Tab } from '@skeletonlabs/skeleton';
+    import { TabGroup, Tab } from '@skeletonlabs/skeleton';
     import { page } from '$app/stores';
 
     import { bridge_info, devices, device_states } from '$lib/mqtt';
-    import type { Device, DeviceState, Dictionary } from '$lib/types';
+    import type { Device, DeviceState } from '$lib/types';
     // import * as MQTT from '$lib/mqtt';
 
-    import EditFriendlyName from './EditFriendlyName.svelte';
-    import EditDescription from './EditDescription.svelte';
     import DeviceImage from './DeviceImage.svelte';
     import InlineEdit from './InlineEdit.svelte';
 
     import { writable } from 'svelte/store';
-    import EditFieldModal from './EditFieldModal.svelte';
     let storeThree = writable('c');
 
     const key = $page.params.device;
     $: device_model = $devices.find((dev: Device) => dev.ieee_address === key);
     $: device = $bridge_info?.config?.devices[key];
-    // $: device_state = $device_states[key as keyof DeviceState];
+    $: device_state = $device_states[key as keyof DeviceState];
 
     function updateFriendlyname(response: CustomEvent<any>) {
         console.log('updateFriendlyname', response.detail);
@@ -51,23 +48,6 @@
                     value={device.description}
                     on:save={(i) => updateDescription(i)}
                 />
-
-                <!-- <h1 class="group my-2 !text-4xl !font-medium text-center sm:text-left"> -->
-                <!--     <EditFieldModal -->
-                <!--         modalDialog={EditFriendlyName} -->
-                <!--         title="Edit device name" -->
-                <!--         props={{ name: device.friendly_name }} -->
-                <!--         onsave={updateFriendlyname} -->
-                <!--     />{device.friendly_name} -->
-                <!-- </h1> -->
-                <!-- <p class="group my-2 text-center sm:text-left"> -->
-                <!--     <EditFieldModal -->
-                <!--         modalDialog={EditDescription} -->
-                <!--         title="Edit description" -->
-                <!--         props={{ description: device.description || '' }} -->
-                <!--         onsave={updateDescription} -->
-                <!--     />{device.description || 'Default description text...'} -->
-                <!-- </p> -->
             </div>
         </div>
 
