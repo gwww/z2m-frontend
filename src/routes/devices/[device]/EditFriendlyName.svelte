@@ -32,7 +32,7 @@
             <input type="text" bind:value={formData.name} placeholder="Enter name..." />
         </label>
         <SlideToggle bind:checked={formData.update_home_assistant}
-            >Update Home Asisstant Entity name</SlideToggle
+            >Update Home Assistant Entity name</SlideToggle
         >
     </form>
     <!-- prettier-ignore -->

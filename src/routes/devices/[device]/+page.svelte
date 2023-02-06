@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { TabGroup, Tab } from '@skeletonlabs/skeleton';
+    import { SlideToggle, TabGroup, Tab } from '@skeletonlabs/skeleton';
     import { page } from '$app/stores';
 
     import { bridge_info, devices, device_states } from '$lib/mqtt';
@@ -9,6 +9,7 @@
     import EditFriendlyName from './EditFriendlyName.svelte';
     import EditDescription from './EditDescription.svelte';
     import DeviceImage from './DeviceImage.svelte';
+    import InlineEdit from './InlineEdit.svelte';
 
     import { writable } from 'svelte/store';
     import EditFieldModal from './EditFieldModal.svelte';
@@ -19,37 +20,54 @@
     $: device = $bridge_info?.config?.devices[key];
     // $: device_state = $device_states[key as keyof DeviceState];
 
-    function updateFriendlyname(response: Dictionary<string>) {
-        console.log('updateFriendlyname', response);
+    function updateFriendlyname(response: CustomEvent<any>) {
+        console.log('updateFriendlyname', response.detail);
     }
 
-    function updateDescription(response: Dictionary<string>) {
-        console.log('updateDescription', response);
+    function updateDescription(response: CustomEvent<any>) {
+        console.log('updateDescription', response.detail);
     }
 </script>
 
 {#if device}
-    <div class="card p-4 space-y-4">
+    <div class="card p-4 space-y-8">
         <div class="flex flex-wrap gap-4 justify-center items-center flex-col sm:flex-row">
             <DeviceImage image={device_model?.definition.model || ''} />
 
             <div>
-                <h1 class="group my-2 !text-4xl !font-medium text-center sm:text-left">
-                    <EditFieldModal
-                        modalDialog={EditFriendlyName}
-                        title="Edit device name"
-                        props={{ name: device.friendly_name }}
-                        onsave={updateFriendlyname}
-                    />{device.friendly_name}
-                </h1>
-                <p class="group my-2 text-center sm:text-left">
-                    <EditFieldModal
-                        modalDialog={EditDescription}
-                        title="Edit description"
-                        props={{ description: device.description || '' }}
-                        onsave={updateDescription}
-                    />{device.description || 'Default description text...'}
-                </p>
+                <InlineEdit
+                    class="text-2xl"
+                    type="text"
+                    placeholder="Name..."
+                    value={device.friendly_name}
+                    toggle={'Update Home Assistant Entity'}
+                    on:save={(i) => updateFriendlyname(i)}
+                />
+                <div class="mt-9" />
+                <InlineEdit
+                    class="text-sm"
+                    type="text"
+                    placeholder="Description..."
+                    value={device.description}
+                    on:save={(i) => updateDescription(i)}
+                />
+
+                <!-- <h1 class="group my-2 !text-4xl !font-medium text-center sm:text-left"> -->
+                <!--     <EditFieldModal -->
+                <!--         modalDialog={EditFriendlyName} -->
+                <!--         title="Edit device name" -->
+                <!--         props={{ name: device.friendly_name }} -->
+                <!--         onsave={updateFriendlyname} -->
+                <!--     />{device.friendly_name} -->
+                <!-- </h1> -->
+                <!-- <p class="group my-2 text-center sm:text-left"> -->
+                <!--     <EditFieldModal -->
+                <!--         modalDialog={EditDescription} -->
+                <!--         title="Edit description" -->
+                <!--         props={{ description: device.description || '' }} -->
+                <!--         onsave={updateDescription} -->
+                <!--     />{device.description || 'Default description text...'} -->
+                <!-- </p> -->
             </div>
         </div>
 
