@@ -112,15 +112,15 @@ export class MQTT_handler {
 
 async function send(topic: string, payload: GenericObject) {
     console.debug('MQTT send:', topic, payload)
-    return await my_mqtt.mqtt.json_send(`zigbee2mqtt/${topic}`, { ...payload, transaction: generateId() })
+    return my_mqtt.mqtt.json_send(`zigbee2mqtt/${topic}`, { ...payload, transaction: generateId() })
 }
 
 export async function rename(from: string, to: string, homeassistant_rename: boolean) {
-    await send('bridge/request/device/rename', { from, to, homeassistant_rename })
+    return send('bridge/request/device/rename', { from, to, homeassistant_rename })
 }
 
 export async function set_description(id: string, description: string) {
-    await send('bridge/request/device/options', { id, "options": { description } })
+    return send('bridge/request/device/options', { id, "options": { description } })
 }
 
 // Experimental //////////////////

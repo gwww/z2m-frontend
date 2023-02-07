@@ -8,6 +8,7 @@
 
     import DeviceImage from './DeviceImage.svelte';
     import InlineEdit from './InlineEdit.svelte';
+    import type { SaveResult } from './InlineEdit.svelte';
 
     import { writable } from 'svelte/store';
     let storeThree = writable('c');
@@ -17,12 +18,14 @@
     $: device = $bridge_info?.config?.devices[key];
     $: device_state = $device_states[key as keyof DeviceState];
 
-    function updateFriendlyname(response: CustomEvent<any>) {
-        MQTT.rename(device.friendly_name, response.detail.value, response.detail.toggleChecked);
+    function updateFriendlyname(result: SaveResult): Promise<void> {
+        console.log('updateFriendlyname called');
+        return MQTT.rename(device.friendly_name, result.value, result.toggleChecked);
     }
 
-    function updateDescription(response: CustomEvent<any>) {
-        MQTT.set_description(key, response.detail.value);
+    function updateDescription(result: SaveResult): Promise<void> {
+        console.log('updateDescription called');
+        return MQTT.set_description(key, result.value);
     }
 </script>
 
@@ -38,7 +41,7 @@
                     placeholder="Name..."
                     value={device.friendly_name}
                     toggle={'Update Home Assistant Entity'}
-                    on:save={(i) => updateFriendlyname(i)}
+                    callback={updateFriendlyname}
                 />
                 <div class="mt-9" />
                 <InlineEdit
@@ -46,7 +49,7 @@
                     type="text"
                     placeholder="Description..."
                     value={device.description}
-                    on:save={(i) => updateDescription(i)}
+                    callback={updateDescription}
                 />
             </div>
         </div>

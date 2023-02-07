@@ -1,14 +1,23 @@
 <!-- Adapted from: https://github.com/PaulMaly/svelte-inline-edit -->
-<script lang="ts">
-    import { createEventDispatcher } from 'svelte';
-    import { SlideToggle } from '@skeletonlabs/skeleton';
+<script context="module" lang="ts">
+    export interface SaveResult {
+        value: string;
+        toggleChecked: boolean;
+    }
+    export interface saveCallback {
+        (result: SaveResult): Promise<void>;
+    }
+</script>
 
-    const dispatch = createEventDispatcher();
+<script lang="ts">
+    import { SlideToggle } from '@skeletonlabs/skeleton';
 
     export let value = '';
     export let rows = 1;
     export let options: string[] = [];
+    export let promise: Promise<void> | undefined = undefined;
     export let toggle: string = '';
+    export let callback: saveCallback;
 
     let readonly = true,
         input: any,
@@ -24,19 +33,18 @@
 
     function edit() {
         readonly && (readonly = false);
-        dispatch('edit', input);
     }
 
     function cancel() {
+        console.log('cancel called');
         input.value = value;
         readonly = true;
-        dispatch('cancel', input);
     }
 
-    function save() {
+    async function save() {
         readonly = true;
         value = input.value;
-        dispatch('save', { value, toggleChecked });
+        promise = callback({ value, toggleChecked });
     }
 </script>
 
@@ -100,6 +108,15 @@
                 <slot name="cancel">&cross;</slot>
             </button>
         </div>
+    {/if}
+    {#if promise}
+        {#await promise}
+            <!--     Updating... -->
+            <!-- {:then success} -->
+            <!--     <span style="color: green;">Updated</span> -->
+            <!-- {:catch error} -->
+            <!--     <span style="color: red;">Error</span> -->
+        {/await}
     {/if}
 </div>
 
