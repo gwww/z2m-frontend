@@ -40,9 +40,9 @@
                     toggle={'Update Home Assistant Entity'}
                     on:save={(i) => updateFriendlyname(i)}
                 />
-                <div class="mt-9" />
+                <!-- <div class="mt-9" /> -->
                 <InlineEdit
-                    class="text-sm"
+                    class="text-sm mt-9"
                     type="text"
                     placeholder="Description..."
                     value={device.description}
