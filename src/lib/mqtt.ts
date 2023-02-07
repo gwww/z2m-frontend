@@ -38,6 +38,12 @@ export class MQTT_handler {
         this.mqtt.subscribe('zigbee2mqtt/#');
         this.mqtt
             .on_topic(
+                'zigbee2mqtt/bridge/response/device/:cmd',
+                (pkt: any, params: Dictionary<string>, ctx: any) => {
+                    this.handle_msg(pkt, params, ctx, this.handle_bridge_response)
+                }
+            )
+            .on_topic(
                 'zigbee2mqtt/bridge/:cmd',
                 (pkt: any, params: Dictionary<string>, ctx: any) => {
                     this.handle_msg(pkt, params, ctx, this.handle_bridge_msg);
@@ -71,6 +77,14 @@ export class MQTT_handler {
             try {
                 handler(pkt.text(), params);
             } catch { } // Either a bad packet or one that we don't know how to decode; ignore it.
+        }
+    }
+
+    handle_bridge_response(pkt: GenericObject, params: Dictionary<string>) {
+        console.log('bridge response json', params, pkt)
+        const transaction: string = <string>pkt.transaction
+        if (transaction) {
+            outstanding.completeRequest(transaction, <string>pkt.error ?? '')
         }
     }
 
@@ -110,11 +124,6 @@ export class MQTT_handler {
     }
 }
 
-async function send(topic: string, payload: GenericObject) {
-    console.debug('MQTT send:', topic, payload)
-    return my_mqtt.mqtt.json_send(`zigbee2mqtt/${topic}`, { ...payload, transaction: generateId() })
-}
-
 export async function rename(from: string, to: string, homeassistant_rename: boolean) {
     return send('bridge/request/device/rename', { from, to, homeassistant_rename })
 }
@@ -123,36 +132,53 @@ export async function set_description(id: string, description: string) {
     return send('bridge/request/device/options', { id, "options": { description } })
 }
 
-// Experimental //////////////////
-// export class awaitMQTTResponse {
-//     promise: Promise<any>;
-//     resolve: any;
-//
-//     constructor(msg: any, timeout: number = 5000) {
-//         this.promise = new Promise((resolve, reject) => {
-//             setTimeout(() => {
-//                 reject('Timeout!!!');
-//             }, timeout);
-//             this.resolve = resolve;
-//         });
-//     }
-// }
-//
-// function asyncAction() {
-//     var dfd = new awaitMQTTResponse('foo', 100);
-//
-//     setTimeout(() => {
-//         dfd.resolve(42);
-//     }, Math.floor(Math.random() * 150));
-//
-//     return dfd.promise;
-// }
-//
-// asyncAction().then(
-//     (result) => {
-//         console.log(result);
-//     },
-//     (result) => {
-//         console.log(result);
-//     }
-// );
+interface Request {
+    timer: any;
+    resolve: any;
+    reject: any;
+}
+
+class MQTTOutstandingRequests {
+    outstanding_requests: Dictionary<Request> = {};
+
+    addRequest(id: string, req: Request) {
+        this.outstanding_requests[id] = req;
+    }
+
+    removeRequest(id: string) {
+        delete this.outstanding_requests[id];
+    }
+
+    completeRequest(id: string, error: string) {
+        const request = this.outstanding_requests[id]
+        if (request) {
+            this.removeRequest(id)
+            clearTimeout(request.timer)
+            if (error) {
+                console.log(`completing Request ${id}  Error: ${error}`)
+                request.reject(error)
+            } else {
+                console.log(`completing Request ${id}, success!}`)
+                request.resolve(`Success, ${id} response received`)
+            }
+        }
+    }
+
+    createRequest(id: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => {
+                this.completeRequest(id, `Timeout waiting for ${id}`)
+            }, 5000)
+            this.addRequest(id, { timer, resolve, reject })
+        })
+    }
+}
+
+const outstanding = new MQTTOutstandingRequests()
+
+async function send(topic: string, payload: GenericObject): Promise<string> {
+    console.debug('MQTT send:', topic, payload)
+    const transaction = generateId()
+    await my_mqtt.mqtt.json_send(`zigbee2mqtt/${topic}`, { ...payload, transaction })
+    return outstanding.createRequest(transaction)
+}

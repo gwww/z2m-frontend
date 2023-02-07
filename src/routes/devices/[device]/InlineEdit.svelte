@@ -5,17 +5,18 @@
         toggleChecked: boolean;
     }
     export interface saveCallback {
-        (result: SaveResult): Promise<void>;
+        (result: SaveResult): Promise<string>;
     }
 </script>
 
 <script lang="ts">
     import { SlideToggle } from '@skeletonlabs/skeleton';
+    import TimedShow from './TimedShow.svelte';
 
     export let value = '';
     export let rows = 1;
     export let options: string[] = [];
-    export let promise: Promise<void> | undefined = undefined;
+    export let promise: Promise<string> | undefined = undefined;
     export let toggle: string = '';
     export let callback: saveCallback;
 
@@ -109,13 +110,19 @@
             </button>
         </div>
     {/if}
-    {#if promise}
+    {#if promise && readonly}
         {#await promise}
-            <!--     Updating... -->
-            <!-- {:then success} -->
-            <!--     <span style="color: green;">Updated</span> -->
-            <!-- {:catch error} -->
-            <!--     <span style="color: red;">Error</span> -->
+            <TimedShow after={250}
+                ><div class="left-3 mt-1 text-sm text-tertiary-500">Updating...</div></TimedShow
+            >
+        {:then success}
+            <TimedShow showFor={2500}
+                ><div class="left-3 mt-1 text-sm text-success-500">Updated</div></TimedShow
+            >
+        {:catch error}
+            <TimedShow showFor={10000}
+                ><div class="left-3 mt-1 text-sm text-error-500">{error}</div></TimedShow
+            >
         {/await}
     {/if}
 </div>
