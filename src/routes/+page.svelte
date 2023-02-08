@@ -4,7 +4,7 @@
     import type { Device } from '$lib/types';
     import { device_available, device_states, devices, bridge_info } from '$lib/mqtt';
     import * as timeago from 'timeago.js';
-    import { PowerStatus } from '$components/PowerStatus';
+    import PowerStatus from '$components/PowerStatus.svelte';
 
     $: avail = $bridge_info?.config.availability !== undefined;
     $: seen =

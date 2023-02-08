@@ -6,10 +6,10 @@
     import { bridge_info, devices, device_states } from '$lib/mqtt';
     import type { Device, DeviceState } from '$lib/types';
 
-    import DeviceImage from './DeviceImage.svelte';
     import InlineEdit from '$components/InlineEdit.svelte';
     import type { SaveResult } from '$components/InlineEdit.svelte';
     import Attributes from './Attributes.svelte';
+    import DeviceImage from './DeviceImage.svelte';
 
     let tabCurrent: number = 0;
     const desc =
