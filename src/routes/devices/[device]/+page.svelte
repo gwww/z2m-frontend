@@ -10,8 +10,12 @@
     import InlineEdit from './InlineEdit.svelte';
     import type { SaveResult } from './InlineEdit.svelte';
 
-    import { writable } from 'svelte/store';
-    let storeThree = writable('c');
+    let tabCurrent: number = 0;
+    let desc = {
+        books: 'A written or printed work consisting of pages glued or sewn together along one side and bound in covers.',
+        movies: 'A story or event recorded by a camera as a set of moving images and shown in a theater or on television; a motion picture.',
+        tv: 'A system for transmitting visual images and sound to screens, chiefly for entertainment, information, and education.',
+    };
 
     const key = $page.params.device;
     $: device_model = $devices.find((dev: Device) => dev.ieee_address === key);
@@ -36,7 +40,7 @@
 
             <div>
                 <InlineEdit
-                    class="text-2xl"
+                    class="input text-2xl"
                     type="text"
                     placeholder="Name..."
                     value={device.friendly_name}
@@ -45,7 +49,7 @@
                 />
                 <div class="mt-9" />
                 <InlineEdit
-                    class="text-sm"
+                    class="input text-sm"
                     type="text"
                     placeholder="Description..."
                     value={device.description}
@@ -55,64 +59,38 @@
         </div>
 
         <TabGroup
-            selected={storeThree}
-            justify="justify-start md:justify-center"
-            borderColor="border-tertiary-500"
-            fill="fill-tertiary-500"
-            color="text-tertiary-500"
-            hover="hover:bg-tertiary-500/10"
+            justify="justify-center"
+            active="border-b-4 border-primary-500"
+            hover="hover:variant-soft-primary"
         >
-            <Tab value="a">
-                <svelte:fragment slot="lead">
-                    <div class="i-mdi-close-circle" />
-                </svelte:fragment>
+            <!-- Tabs -->
+            <Tab bind:group={tabCurrent} name="books" value={0}>
+                <svelte:fragment slot="lead"><i class="fa-solid fa-book" /></svelte:fragment>
                 State
             </Tab>
-            <Tab value="b">
-                <svelte:fragment slot="lead">
-                    <i class="fa-solid fa-clapperboard" />
-                </svelte:fragment>
+            <Tab bind:group={tabCurrent} name="movies" value={1}>
+                <svelte:fragment slot="lead"><i class="fa-solid fa-film" /></svelte:fragment>
                 Attributes
             </Tab>
-            <Tab value="c">
-                <svelte:fragment slot="lead">
-                    <i class="fa-solid fa-tv" />
-                </svelte:fragment>
+            <Tab bind:group={tabCurrent} name="tv" value={2}>
+                <svelte:fragment slot="lead"><i class="fa-solid fa-tv" /></svelte:fragment>
                 Settings
             </Tab>
-            <Tab value="d">
-                <svelte:fragment slot="lead">
-                    <i class="fa-solid fa-tv" />
-                </svelte:fragment>
+            <Tab bind:group={tabCurrent} name="tv" value={3}>
+                <svelte:fragment slot="lead"><i class="fa-solid fa-tv" /></svelte:fragment>
                 Advanced
             </Tab>
+            <!-- Panel -->
+            <svelte:fragment slot="panel">
+                {#if tabCurrent === 0}
+                    <p class="text-center">{desc.books}</p>
+                {:else if tabCurrent === 1}
+                    <p class="text-center">{desc.movies}</p>
+                {:else if tabCurrent === 2}
+                    <p class="text-center">{desc.tv}</p>
+                {/if}
+            </svelte:fragment>
         </TabGroup>
-        <div>
-            {#if $storeThree === 'a'}
-                <h3>Books</h3>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua.
-                </p>
-            {/if}
-            {#if $storeThree === 'b'}
-                <h3>Movies</h3>
-                <p>
-                    Nisl nunc mi ipsum faucibus vitae aliquet nec. Ac ut consequat semper viverra
-                    nam libero justo laoreet. Nec sagittis aliquam malesuada.
-                </p>
-            {/if}
-            {#if $storeThree === 'c'}
-                <h3>Television</h3>
-                <p>
-                    Ut sem viverra aliquet eget sit. Porttitor lacus luctus accumsan tortor posuere
-                    ac ut consequat. Vulputate enim nulla aliquet porttitor.
-                </p>
-            {/if}
-            {#if $storeThree === 'd'}
-                <h3>Stuff</h3>
-            {/if}
-        </div>
     </div>
 {:else}
     <h3>Error: device {key} is unknown.</h3>

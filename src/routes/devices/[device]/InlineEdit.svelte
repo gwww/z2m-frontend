@@ -47,6 +47,8 @@
         value = input.value;
         promise = callback({ value, toggleChecked });
     }
+
+    let name: string;
 </script>
 
 <svelte:body on:click={cancel} />
@@ -88,6 +90,7 @@
                 <span class="h-6 mr-2" on:click|stopPropagation on:keypress>
                     <SlideToggle
                         bind:checked={toggleChecked}
+                        {name}
                         class="scale-80"
                         size="sm"
                         accent="bg-primary-500"

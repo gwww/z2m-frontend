@@ -3,7 +3,6 @@
     import type { Column, Styles } from '$components/DataTable';
     import type { Device } from '$lib/types';
     import { device_available, device_states, devices, bridge_info } from '$lib/mqtt';
-    // import { device_available, device_states, devices, bridge_info } from '$lib/stores';
     import * as timeago from 'timeago.js';
     import { PowerStatus } from '$components/PowerStatus';
 
@@ -20,9 +19,9 @@
         {
             name: 'Device',
             id: '',
-            render_html: (cell: Device) => {
-                return `<a href="/devices/${cell.ieee_address}">${cell.friendly_name}</a><br>\
-                    ${cell.definition.vendor} / ${cell.definition.model}`;
+            render_html: (device: Device) => {
+                return `<a href="/devices/${device.ieee_address}">${device.friendly_name}</a><br>\
+                    ${device.definition.vendor} / ${device.definition.model}`;
             },
             sort: true,
         },
@@ -64,7 +63,7 @@
                     comp: PowerStatus,
                     props: {
                         powerSource: device.power_source,
-                        powerLevel: states[device.friendly_name].battery,
+                        powerLevel: states[device.friendly_name]?.battery,
                     },
                 };
             },
