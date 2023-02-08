@@ -9,6 +9,7 @@
     import DeviceImage from './DeviceImage.svelte';
     import InlineEdit from './InlineEdit.svelte';
     import type { SaveResult } from './InlineEdit.svelte';
+    import Attributes from './Attributes.svelte';
 
     let tabCurrent: number = 0;
     let desc = {
@@ -64,19 +65,19 @@
             hover="hover:variant-soft-primary"
         >
             <!-- Tabs -->
-            <Tab bind:group={tabCurrent} name="books" value={0}>
+            <Tab bind:group={tabCurrent} name="state" value={0}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-book" /></svelte:fragment>
                 State
             </Tab>
-            <Tab bind:group={tabCurrent} name="movies" value={1}>
+            <Tab bind:group={tabCurrent} name="attributes" value={1}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-film" /></svelte:fragment>
                 Attributes
             </Tab>
-            <Tab bind:group={tabCurrent} name="tv" value={2}>
+            <Tab bind:group={tabCurrent} name="settings" value={2}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-tv" /></svelte:fragment>
                 Settings
             </Tab>
-            <Tab bind:group={tabCurrent} name="tv" value={3}>
+            <Tab bind:group={tabCurrent} name="advanced" value={3}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-tv" /></svelte:fragment>
                 Advanced
             </Tab>
@@ -85,8 +86,10 @@
                 {#if tabCurrent === 0}
                     <p class="text-center">{desc.books}</p>
                 {:else if tabCurrent === 1}
-                    <p class="text-center">{desc.movies}</p>
+                    <Attributes id={key} />
                 {:else if tabCurrent === 2}
+                    <p class="text-center">{desc.tv}</p>
+                {:else if tabCurrent === 3}
                     <p class="text-center">{desc.tv}</p>
                 {/if}
             </svelte:fragment>
