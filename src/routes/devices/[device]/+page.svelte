@@ -7,16 +7,13 @@
     import type { Device, DeviceState } from '$lib/types';
 
     import DeviceImage from './DeviceImage.svelte';
-    import InlineEdit from './InlineEdit.svelte';
-    import type { SaveResult } from './InlineEdit.svelte';
+    import InlineEdit from '$components/InlineEdit.svelte';
+    import type { SaveResult } from '$components/InlineEdit.svelte';
     import Attributes from './Attributes.svelte';
 
     let tabCurrent: number = 0;
-    let desc = {
-        books: 'A written or printed work consisting of pages glued or sewn together along one side and bound in covers.',
-        movies: 'A story or event recorded by a camera as a set of moving images and shown in a theater or on television; a motion picture.',
-        tv: 'A system for transmitting visual images and sound to screens, chiefly for entertainment, information, and education.',
-    };
+    const desc =
+        'Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet voluptate voluptate dolor minim nulla est proident. Nostrud officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex occaecat reprehenderit commodo officia dolor Lorem duis laboris cupidatat officia voluptate. Culpa proident adipisicing id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua reprehenderit commodo ex non excepteur duis sunt velit enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur et est culpa et culpa duis.';
 
     const key = $page.params.device;
     $: device_model = $devices.find((dev: Device) => dev.ieee_address === key);
@@ -84,13 +81,13 @@
             <!-- Panel -->
             <svelte:fragment slot="panel">
                 {#if tabCurrent === 0}
-                    <p class="text-center">{desc.books}</p>
+                    <p class="text-center">{desc}</p>
                 {:else if tabCurrent === 1}
                     <Attributes id={key} />
                 {:else if tabCurrent === 2}
-                    <p class="text-center">{desc.tv}</p>
+                    <p class="text-center">{desc}</p>
                 {:else if tabCurrent === 3}
-                    <p class="text-center">{desc.tv}</p>
+                    <p class="text-center">{desc}</p>
                 {/if}
             </svelte:fragment>
         </TabGroup>
