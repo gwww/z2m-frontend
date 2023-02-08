@@ -32,7 +32,6 @@ export class MQTT_handler {
     }
 
     async on_live(_: U8Mqtt, is_reconnect: boolean) {
-        console.log('MQTT on_live...  reconnecting', is_reconnect || false)
         await this.mqtt.connect(this.auth);
         console.log('MQTT connected...')
         this.mqtt.subscribe('zigbee2mqtt/#');

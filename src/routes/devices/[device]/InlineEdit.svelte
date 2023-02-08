@@ -37,9 +37,10 @@
     }
 
     function cancel() {
-        console.log('cancel called');
-        input.value = value;
-        readonly = true;
+        if (!readonly) {
+            input.value = value;
+            readonly = true;
+        }
     }
 
     async function save() {

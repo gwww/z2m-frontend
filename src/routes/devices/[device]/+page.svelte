@@ -39,7 +39,7 @@
         <div class="flex flex-wrap gap-4 justify-center items-center flex-col sm:flex-row">
             <DeviceImage image={device_model?.definition.model || ''} />
 
-            <div>
+            <div class="w-full md:w-3/5 lg:w-2/5">
                 <InlineEdit
                     class="input text-2xl"
                     type="text"
@@ -67,7 +67,7 @@
             <!-- Tabs -->
             <Tab bind:group={tabCurrent} name="state" value={0}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-book" /></svelte:fragment>
-                State
+                State/Control
             </Tab>
             <Tab bind:group={tabCurrent} name="attributes" value={1}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-film" /></svelte:fragment>
