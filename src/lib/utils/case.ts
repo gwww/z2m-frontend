@@ -16,5 +16,5 @@ const exceptions: Dictionary<string> = {
 }
 
 export const any2Title = (str: string) => {
-  exceptions[str] ? exceptions[str] : str.includes('_') ? camel2Title(str) : snake2Title(str)
+  return exceptions[str] ? exceptions[str] : str.includes('_') ? snake2Title(str) : camel2Title(str)
 }
