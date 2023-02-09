@@ -21,10 +21,12 @@ export class MQTT_handler {
     mqtt: U8Mqtt;
     server: string;
     auth: MQTTAuth | undefined;
+    prefix: string
 
-    constructor(mqtt_server: string, auth: MQTTAuth | undefined = undefined) {
+    constructor(mqtt_server: string, auth: MQTTAuth | undefined = undefined, prefix: string) {
         this.server = mqtt_server;
         this.auth = auth;
+        this.prefix = prefix
         this.mqtt = mqtt_client({ on_live: this.on_live.bind(this) })
             .with_websock(this.server)
             .with_autoreconnect(5000)
@@ -34,30 +36,30 @@ export class MQTT_handler {
     async on_live(_: U8Mqtt, is_reconnect: boolean) {
         await this.mqtt.connect(this.auth);
         console.log('MQTT connected...')
-        this.mqtt.subscribe('zigbee2mqtt/#');
+        this.mqtt.subscribe(`${this.prefix}/#`);
         this.mqtt
             .on_topic(
-                'zigbee2mqtt/bridge/response/device/:cmd',
+                `${this.prefix}/bridge/response/device/:cmd`,
                 (pkt: any, params: Dictionary<string>, ctx: any) => {
                     this.handle_msg(pkt, params, ctx, this.handle_bridge_response)
                 }
             )
             .on_topic(
-                'zigbee2mqtt/bridge/:cmd',
+                `${this.prefix}/bridge/:cmd`,
                 (pkt: any, params: Dictionary<string>, ctx: any) => {
                     this.handle_msg(pkt, params, ctx, this.handle_bridge_msg);
                 }
             )
             .on_topic(
-                'zigbee2mqtt/:device/availability',
+                `${this.prefix}/:device/availability`,
                 (pkt: any, params: Dictionary<string>, ctx: any) => {
                     this.handle_msg(pkt, params, ctx, this.handle_availability_msg);
                 }
             )
-            .on_topic('zigbee2mqtt/:device', (pkt: any, params: Dictionary<string>, ctx: any) => {
+            .on_topic(`${this.prefix}/:device`, (pkt: any, params: Dictionary<string>, ctx: any) => {
                 this.handle_msg(pkt, params, ctx, this.handle_state_msg);
             })
-            .on_topic('zigbee2mqtt/*', (pkt: any, params: Dictionary<string>, ctx: any) => {
+            .on_topic(`${this.prefix}/*`, (pkt: any, params: Dictionary<string>, ctx: any) => {
                 this.handle_msg(pkt, params, ctx, this.unhandled_msg);
             });
     }
@@ -178,6 +180,6 @@ const outstanding = new MQTTOutstandingRequests()
 async function send(topic: string, payload: GenericObject): Promise<string> {
     console.debug('MQTT send:', topic, payload)
     const transaction = generateId()
-    await my_mqtt.mqtt.json_send(`zigbee2mqtt/${topic}`, { ...payload, transaction })
+    await my_mqtt.mqtt.json_send(`${my_mqtt.prefix}/${topic}`, { ...payload, transaction })
     return outstanding.createRequest(transaction)
 }
