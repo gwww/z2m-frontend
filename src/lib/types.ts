@@ -13,6 +13,7 @@ export type PowerSource = 'Battery' | 'DC Source' | 'Mains (single phase)';
 export interface DeviceState {
     last_seen?: string;
     battery?: number;
+    linkquality: number;
 }
 
 export type DeviceType = 'Router' | 'Coordinator' | 'EndDevice';

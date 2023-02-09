@@ -10,6 +10,7 @@
     import type { SaveResult } from '$components/InlineEdit.svelte';
     import Attributes from './Attributes.svelte';
     import DeviceImage from './DeviceImage.svelte';
+    import StateControl from './StateControl.svelte';
 
     let tabCurrent: number = 0;
     const desc =
@@ -78,16 +79,15 @@
                 <svelte:fragment slot="lead"><i class="fa-solid fa-tv" /></svelte:fragment>
                 Advanced
             </Tab>
-            <!-- Panel -->
             <svelte:fragment slot="panel">
                 {#if tabCurrent === 0}
-                    <p class="text-center">{desc}</p>
+                    <StateControl id={key} />
                 {:else if tabCurrent === 1}
                     <Attributes id={key} />
                 {:else if tabCurrent === 2}
-                    <p class="text-center">{desc}</p>
+                    <p>{desc}</p>
                 {:else if tabCurrent === 3}
-                    <p class="text-center">{desc}</p>
+                    <p>{desc}</p>
                 {/if}
             </svelte:fragment>
         </TabGroup>
@@ -95,6 +95,3 @@
 {:else}
     <h3>Error: device {key} is unknown.</h3>
 {/if}
-
-<style>
-</style>
