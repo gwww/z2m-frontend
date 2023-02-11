@@ -22,7 +22,7 @@
     let icon: string;
     let colour = 'darkgray';
     let tooltip_value = powerSource as string;
-    if (powerSource === 'Battery') {
+    $: if (powerSource === 'Battery') {
         if (powerLevel === undefined || powerLevel < 0 || powerLevel > 100) {
             icon = 'i-mdi-battery';
         } else {
