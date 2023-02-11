@@ -95,7 +95,7 @@ export class MQTT_handler {
         if (device_name === 'bridge') return;
 
         device_states.update((states) => {
-            states[device_name] = pkt as DeviceState;
+            states[device_name] = pkt as unknown as DeviceState;
             return states;
         });
         return;
