@@ -39,3 +39,18 @@ describe('Auto detect', () => {
         expect(Case.any2Title('thisIs6ALongerTest')).toBe('This Is 6 A Longer Test');
     });
 });
+
+describe('Exceptions', () => {
+    it('Full exception', () => {
+        expect(Case.any2Title('linkquality')).toBe('Link Quality');
+    });
+    it('Change LED embedded', () => {
+        expect(Case.any2Title('thisIs6ALedTest')).toBe('This Is 6 A LED Test');
+    });
+    it('Change LED at start', () => {
+        expect(Case.any2Title('led_test')).toBe('LED Test');
+    });
+    it('Change LED at end', () => {
+        expect(Case.any2Title('testLed')).toBe('Test LED');
+    });
+});
