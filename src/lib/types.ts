@@ -16,6 +16,65 @@ export interface DeviceState {
     linkquality: number;
 }
 
+export enum AccessType {
+    ACCESS_PUBLISHED = 0b001,
+    ACCESS_WRITE = 0b010,
+    ACCESS_READ = 0b100,
+}
+
+export const EXPOSED_TYPE = ['binary', 'enum', 'numeric', 'text'] as const;
+export type ExposedType = typeof EXPOSED_TYPE[number];
+
+export const EXPOSED_FEATURE_TYPE = ['composite', 'light', 'switch'] as const;
+export type ExposedFeatureType = typeof EXPOSED_FEATURE_TYPE[number]
+
+export interface ExposedItemBase {
+    type: ExposedType,
+    name: string,
+    property: string,
+    access: AccessType,
+    description: string,
+    unit?: string,
+}
+
+export interface ExposedBinary extends ExposedItemBase {
+    type: 'binary'
+    value_on: string,
+    value_off: string,
+    value_toggle?: string,
+}
+
+export interface ExposedEnum extends ExposedItemBase {
+    type: 'enum',
+    values: string[],
+}
+
+export interface NumericPreset {
+    name: string,
+    description: string,
+    value: number,
+}
+
+export interface ExposedNumeric extends ExposedItemBase {
+    type: 'numeric',
+    value_min?: string,
+    value_max?: string,
+    presets: NumericPreset[],
+}
+
+export interface ExposedText extends ExposedItemBase {
+    type: 'text',
+}
+
+export interface ExposedFeature {
+    type: ExposedFeatureType,
+    features: ExposedItemBase[],
+    property?: string,
+    name?: string,
+}
+
+export type Exposes = ExposedFeature | ExposedItemBase;
+
 export type DeviceType = 'Router' | 'Coordinator' | 'EndDevice';
 
 export interface DeviceDefinition {
@@ -24,7 +83,7 @@ export interface DeviceDefinition {
     vendor: string;
     supports_ota: boolean;
 
-    exposes: NotDefinedYet;
+    exposes: Exposes[],
     options: NotDefinedYet;
 }
 
