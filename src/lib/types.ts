@@ -22,7 +22,7 @@ export enum AccessType {
     ACCESS_READ = 0b100,
 }
 
-export const EXPOSED_TYPE = ['binary', 'enum', 'numeric', 'text'] as const;
+export const EXPOSED_TYPE = ['binary', 'enum', 'list', 'numeric', 'text'] as const;
 export type ExposedType = typeof EXPOSED_TYPE[number];
 
 export const EXPOSED_FEATURE_TYPE = ['composite', 'light', 'switch'] as const;
