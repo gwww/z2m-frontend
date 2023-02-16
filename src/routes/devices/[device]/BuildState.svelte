@@ -1,10 +1,15 @@
 <script lang="ts">
     import { EXPOSED_FEATURE_TYPE } from '$lib/types';
-    import type { Exposes } from '$lib/types';
+    import type { Dictionary, ExposedItemBase, Exposes } from '$lib/types';
     import * as Case from '$lib/utils/case';
+    import WrappedControl from './WrappedControl.svelte';
+    import BinaryControl from './BinaryControl.svelte';
 
     export let type = '';
     export let features: Exposes[] = [];
+    export let state: Dictionary<any>;
+
+    $: console.log('In BuildState:', state);
 
     function isComposite(_type: string): boolean {
         return (EXPOSED_FEATURE_TYPE as ReadonlyArray<string>).includes(_type);
@@ -25,21 +30,26 @@
         {/if}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
             {#each features as feature}
-                <svelte:self {...feature} {$$restProps} />
+                <svelte:self {...feature} />
             {/each}
         </div>
     </div>
-{:else if type === 'root'}
+{:else if type === '_root_'}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {#each features as feature}
-            <svelte:self {...feature} {$$restProps} />
+            <svelte:self {...feature} />
         {/each}
     </div>
 {:else if !$$restProps.access || $$restProps.access === 7}
-    <div class={'p-4'}>
-        <p>
-            <span class="font-bold text-primary-500">{Case.any2Title($$restProps.property)}</span>
-            {type} / {$$restProps.description}
-        </p>
-    </div>
+    <!-- {@const control = $$restProps} -->
+    <!-- <div class={'p-4'}> -->
+    <!--     <div class="font-bold text-primary-500 text-lg pb-1"> -->
+    <!--         {Case.any2Title($$restProps.property)} -->
+    <!--     </div> -->
+    <!--     <div class="text-sm pb-2">{$$restProps.description}</div> -->
+    <!--     {#if type === 'binary'} -->
+    <!--         <BinaryControl {...$$props} /> -->
+    <!--     {/if} -->
+    <!-- </div> -->
+    <WrappedControl {...$$props} {state} />
 {/if}

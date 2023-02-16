@@ -1,7 +1,6 @@
 <script lang="ts">
     import { device_available, device_states, devices, bridge_info } from '$lib/mqtt';
     import type { Device } from '$lib/types';
-    import { buildState } from './buildState';
     import BuildState from './BuildState.svelte';
     import * as timeago from 'timeago.js';
 
@@ -30,11 +29,9 @@
     }
 
     $: device_model = $devices.find((dev: Device) => dev.ieee_address === id);
-    $: exposes = { type: 'root', features: device_model!.definition.exposes };
-
     $: state = $device_states[device.friendly_name];
-
-    // $: buildState(device_model, state);
+    $: exposes = { type: '_root_', state: state, features: device_model!.definition.exposes };
+    $: console.log('Exposes............', exposes);
 </script>
 
 <div class="flex justify-evenly mt-4 mb-8">
