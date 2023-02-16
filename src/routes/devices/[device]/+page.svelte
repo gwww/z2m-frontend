@@ -22,12 +22,10 @@
     $: device_state = $device_states[key as keyof DeviceState];
 
     function updateFriendlyname(result: SaveResult): Promise<string> {
-        console.log('updateFriendlyname called');
         return MQTT.rename(device.friendly_name, result.value, result.toggleChecked);
     }
 
     function updateDescription(result: SaveResult): Promise<string> {
-        console.log('updateDescription called');
         return MQTT.set_description(key, result.value);
     }
 </script>
