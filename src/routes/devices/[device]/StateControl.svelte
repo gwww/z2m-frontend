@@ -28,7 +28,6 @@
     }
 
     $: exposes = { type: '_root_', state: state!, features: device!.device!.definition.exposes };
-    // $: console.log('Exposes............', exposes);
 </script>
 
 <div class="flex justify-evenly mt-4 mb-8">

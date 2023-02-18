@@ -1,16 +1,13 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
     import { DataTable, DataTableFilter } from '$components/DataTable';
     import type { Column, Styles } from '$components/DataTable';
     import type { ConsolidatedDevice } from '$lib/types';
-    import { devices, bridge_info } from '$lib/mqtt';
+    import { devices } from '$lib/mqtt';
     import * as timeago from 'timeago.js';
     import PowerStatus from '$components/PowerStatus.svelte';
 
     $: avail = $devices.some((d) => d.availability !== undefined);
-    $: seen =
-        $bridge_info?.config.advanced.last_seen &&
-        $bridge_info.config.advanced.last_seen !== 'disable';
+    $: seen = $devices.some((d) => d.state?.last_seen);
 
     let columns: Column[];
     $: columns = [
@@ -45,7 +42,7 @@
                 }
                 if (seen) {
                     if (device?.state?.last_seen) {
-                        html += timeago.format(device.state!.last_seen!);
+                        html += timeago.format(device.state.last_seen);
                     } else {
                         html += 'N/A';
                     }
@@ -78,15 +75,11 @@
 
     $: data = $devices.filter((device) => device.device?.type !== 'Coordinator');
 
-    const tableId = 'myTable';
+    const tableId = 'dashboardTable';
     const styles: Styles = {
         container: 'table-container mt-4',
         table: 'table table-hover',
     };
-
-    onMount(() => {
-        console.log('Dashboard mounted');
-    });
 </script>
 
 {#if $devices}
