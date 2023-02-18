@@ -4,7 +4,7 @@
 
     export let id: string;
 
-    $: device = $devices.find((dev) => dev.ieee_address === id);
+    $: device = $devices.find((d) => d.ieee_address === id)?.device;
     $: data = [
         ['Device Description', device?.definition.description],
         [
