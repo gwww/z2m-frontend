@@ -7,7 +7,7 @@
         const filter = (<HTMLInputElement>e.target).value;
 
         const regex = new RegExp(filter, 'i');
-        const isFoundInTds = (td: Element) => regex.test(td.innerHTML);
+        const isFoundInTds = (td: Element) => regex.test((<HTMLElement>td).innerText);
         const isFound = (childrenArr: Element[]) => childrenArr.some(isFoundInTds);
         const setTrStyleDisplay = (row: Element) => {
             (<HTMLElement>row).style.display = isFound([...row.children]) ? '' : 'none';
