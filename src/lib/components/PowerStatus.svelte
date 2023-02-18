@@ -21,7 +21,7 @@
 
     let icon: string;
     let colour = 'darkgray';
-    let tooltip_value = powerSource as string;
+    $: tooltip_value = powerSource as string;
     $: if (powerSource === 'Battery') {
         if (powerLevel === undefined || powerLevel < 0 || powerLevel > 100) {
             icon = 'i-mdi-battery';
@@ -36,10 +36,13 @@
     } else if (powerSource === 'DC Source') {
         icon = 'i-mdi-current-dc';
     } else {
+        tooltip_value = 'Powered';
         icon = 'i-mdi-power';
     }
 </script>
 
-<button use:tooltip={{ content: tooltip_value, position: 'top' }} style="color: {colour}">
-    <div class="{icon} text-2xl" />
-</button>
+{#key tooltip_value}
+    <button use:tooltip={{ content: tooltip_value, position: 'top' }} style="color: {colour}">
+        <div class="{icon} text-2xl" />
+    </button>
+{/key}
