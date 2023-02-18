@@ -5,10 +5,11 @@
     export let columns: Column[];
     export let data: Array<any>;
     export let styles: Styles = {};
+    export let tableId: string = '';
 </script>
 
 <div class={styles.container ?? ''}>
-    <table class={styles.table ?? ''}>
+    <table id={tableId} class={styles.table ?? ''}>
         <DataTableHeader {columns} />
         <tbody>
             {#each data as item}
@@ -49,6 +50,3 @@
         </tbody>
     </table>
 </div>
-
-<style>
-</style>

@@ -1,9 +1,9 @@
 <script lang="ts">
-    export let tableSelector: string;
+    export let tableId: string;
 
     // Adapted from: https://stackoverflow.com/a/51187875
     function filterTable(e: Event) {
-        const table_rows = document.querySelectorAll(`${tableSelector} table tbody tr`);
+        const table_rows = document.querySelectorAll(`#${tableId} tbody tr`);
         const filter = (<HTMLInputElement>e.target).value;
 
         const regex = new RegExp(filter, 'i');

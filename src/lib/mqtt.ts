@@ -1,13 +1,15 @@
 // @ts-ignore
 import mqtt_client from 'u8-mqtt/esm/web/index';
-import type { BridgeInfo, Device, DeviceState, Dictionary, GenericObject } from '$lib/types';
+import type { BridgeInfo, ConsolidatedDevice, Device, DeviceState, Dictionary, GenericObject } from '$lib/types';
 import generateId from '$lib/utils/generateId'
 
-import { writable, type Writable } from 'svelte/store';
+import { get, writable, type Writable } from 'svelte/store';
 export const bridge_info: Writable<BridgeInfo | undefined> = writable();
-export const devices: Writable<Device[]> = writable([]);
+export const bdevices: Writable<Device[]> = writable([]);
 export const device_states: Writable<Dictionary<DeviceState>> = writable({});
 export const device_available: Writable<Dictionary<boolean>> = writable({});
+
+export const devices: Writable<ConsolidatedDevice[]> = writable([])
 
 let my_mqtt: MQTT_handler;
 
@@ -35,7 +37,7 @@ export class MQTT_handler {
 
     async on_live(_: U8Mqtt, is_reconnect: boolean) {
         await this.mqtt.connect(this.auth);
-        console.log('MQTT connected...')
+        console.log('MQTT connected...', is_reconnect ? 'reconnect' : '')
         this.mqtt.subscribe(`${this.prefix}/#`);
         this.mqtt
             .on_topic(
@@ -72,17 +74,19 @@ export class MQTT_handler {
     ) {
         // console.log(pkt.topic, params)
         ctx.done = true; // Stops matches on further topics
+
+        let decoded: any
         try {
-            handler(pkt.json(), params);
+            decoded = pkt.json()
         } catch {
-            try {
-                handler(pkt.text(), params);
-            } catch { } // Either a bad packet or one that we don't know how to decode; ignore it.
+            decoded = pkt.text()
         }
+        handler(decoded, params)
+        // console.log("Devices Composite Object...", get(devices))
     }
 
     handle_bridge_response(pkt: GenericObject, params: Dictionary<string>) {
-        console.log('bridge response json', params, pkt)
+        // console.log('bridge response json', params, pkt)
         const transaction: string = <string>pkt.transaction
         if (transaction) {
             outstanding.completeRequest(transaction, <string>pkt.error ?? '')
@@ -93,37 +97,99 @@ export class MQTT_handler {
         // console.log('state packet json', params, pkt)
         const device_name = params['device'];
         if (device_name === 'bridge') return;
+        const state_pkt = pkt as unknown as DeviceState
 
         device_states.update((states) => {
             states[device_name] = pkt as unknown as DeviceState;
             return states;
         });
-        return;
+
+        devices.update(devs => {
+            const device = get_device_from_name(devs, device_name)
+            if (device) device.state = state_pkt
+            return devs
+        })
     }
 
     handle_availability_msg(pkt: string, params: Dictionary<string>) {
         // console.log('avail packet binary', params, pkt)
         const device_name = params['device'];
+
+        // TODO: Cleanup?
         device_available.update((avail) => {
             avail[device_name] = pkt === 'online';
             return avail;
         });
+
+        devices.update(devs => {
+            const device = get_device_from_name(devs, device_name)
+            if (device) device.availability = pkt === 'online'
+            return devs
+        })
     }
 
     handle_bridge_msg(pkt: GenericObject, params: Dictionary<string>) {
         // console.log('bridge packet json', params, pkt)
         const cmd = params['cmd'];
         if (cmd === 'devices') {
-            devices.set(pkt as unknown as Device[]);
+            const devices_pkt = pkt as unknown as Device[];
+            bdevices.set(devices_pkt); // TODO: Cleanup?
+
+            devices.update(devs => {
+                devices_pkt.forEach(dev => {
+                    update_devices(devs, dev.ieee_address, { device: dev })
+                })
+                return devs
+            })
+
         } else if (cmd === 'info') {
-            bridge_info.set(pkt as unknown as BridgeInfo);
+            const bridge_info_pkt = pkt as unknown as BridgeInfo;
+            bridge_info.set(bridge_info_pkt);
+
+            devices.update(devs => {
+                devs = []
+                Object.keys(bridge_info_pkt.config.devices).forEach((ieee_addr) => {
+                    const dev = {
+                        ieee_address: ieee_addr,
+                        config_info: bridge_info_pkt.config.devices[ieee_addr]
+                    }
+                    update_devices(devs, ieee_addr, dev)
+                })
+                return devs
+            })
         }
     }
 
     unhandled_msg(pkt: any, params: Dictionary<string>) {
-        console.log('unhandled packet:', params, pkt);
+        console.debug('unhandled packet:', params, pkt);
     }
 }
+
+const update_devices = (devices: ConsolidatedDevice[], ieee_addr: string, update: any) => {
+    let idx = devices.findIndex(d => d.ieee_address === ieee_addr)
+    if (idx < 0) {
+        devices.push(update)
+    } else {
+        devices[idx] = { ...devices[idx], ...update }
+    }
+}
+
+const get_device_from_name = (devices: ConsolidatedDevice[], name: string): ConsolidatedDevice | undefined => {
+    return devices.find(d => d.ieee_address === name || d.config_info?.friendly_name === name)
+}
+
+// const remove_deleted_devices = (devices: ConsolidatedDevice[], new_keys: string[]) => {
+//     const to_remove: number[] = []
+//     devices.forEach((d, i) => {
+//         if (!new_keys.find(e => d.ieee_address === e)) to_remove.push(i)
+//     })
+// }
+//
+// function cleanup_devices(devices: Dictionary<ConsolidatedDevice>, new_keys: string[]) {
+//     const existing_keys = Object.keys(devices)
+//     const difference = existing_keys.filter(x => !new_keys.includes(x));
+//     difference.forEach((entry) => delete devices[entry])
+// }
 
 export async function rename(from: string, to: string, homeassistant_rename: boolean) {
     return send('bridge/request/device/rename', { from, to, homeassistant_rename })

@@ -1,27 +1,25 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import { DataTable, DataTableFilter } from '$components/DataTable';
     import type { Column, Styles } from '$components/DataTable';
-    import type { Device } from '$lib/types';
-    import { device_available, device_states, devices, bridge_info } from '$lib/mqtt';
+    import type { ConsolidatedDevice } from '$lib/types';
+    import { devices, bridge_info } from '$lib/mqtt';
     import * as timeago from 'timeago.js';
     import PowerStatus from '$components/PowerStatus.svelte';
 
-    $: avail = $bridge_info?.config.availability !== undefined;
+    $: avail = $devices.some((d) => d.availability !== undefined);
     $: seen =
         $bridge_info?.config.advanced.last_seen &&
         $bridge_info.config.advanced.last_seen !== 'disable';
-
-    $: states = $device_states;
-    $: dev_avail = $device_available;
 
     let columns: Column[];
     $: columns = [
         {
             name: 'Device',
             id: '',
-            render_html: (device: Device) => {
-                return `<a href="/devices/${device.ieee_address}">${device.friendly_name}</a><br>\
-                    ${device.definition.vendor} / ${device.definition.model}`;
+            render_html: (device: ConsolidatedDevice) => {
+                return `<a href="/devices/${device.ieee_address}">${device.config_info?.friendly_name}</a><br>\
+                    ${device.device?.definition.vendor} / ${device.device?.definition.model}`;
             },
             sort: true,
         },
@@ -30,11 +28,11 @@
             id: '',
             sort: true,
             hidden: !(seen || avail),
-            render_html: (device: Device) => {
+            render_html: (device: ConsolidatedDevice) => {
                 // Placing this code in a function "hides" the reactivity
                 let html = '';
                 if (avail) {
-                    const online = dev_avail[device.friendly_name];
+                    const online = device.availability;
                     if (online !== undefined) {
                         if (online) {
                             html = '<span class="text-success-600">Online</span><br>';
@@ -46,8 +44,8 @@
                     }
                 }
                 if (seen) {
-                    if (states[device.friendly_name]?.last_seen) {
-                        html += timeago.format(states[device.friendly_name].last_seen!);
+                    if (device?.state?.last_seen) {
+                        html += timeago.format(device.state!.last_seen!);
                     } else {
                         html += 'N/A';
                     }
@@ -58,12 +56,12 @@
         {
             name: 'Power',
             id: '',
-            component: (device: Device) => {
+            component: (device: ConsolidatedDevice) => {
                 return {
                     comp: PowerStatus,
                     props: {
-                        powerSource: device.power_source,
-                        powerLevel: states[device.friendly_name]?.battery,
+                        powerSource: device.device?.power_source,
+                        powerLevel: device.state?.battery,
                     },
                 };
             },
@@ -72,24 +70,26 @@
         {
             name: 'Address',
             id: '',
-            render_html: (cell: Device) => `${cell.ieee_address}<br>${cell.network_address}`,
+            render_html: (device: ConsolidatedDevice) =>
+                `${device.ieee_address}<br>${device.device?.network_address}`,
             sort: true,
         },
     ];
 
-    $: data = $devices.filter((device) => device.type !== 'Coordinator');
+    $: data = $devices.filter((device) => device.device?.type !== 'Coordinator');
 
-    const tableSelector = '#myTable';
+    const tableId = 'myTable';
     const styles: Styles = {
         container: 'table-container mt-4',
         table: 'table table-hover',
     };
+
+    onMount(() => {
+        console.log('Dashboard mounted');
+    });
 </script>
 
-<DataTableFilter {tableSelector} />
-<div id="myTable">
-    <DataTable {columns} {data} {styles} />
-</div>
-
-<style>
-</style>
+{#if $devices}
+    <DataTableFilter {tableId} />
+    <DataTable {columns} {data} {styles} {tableId} />
+{/if}

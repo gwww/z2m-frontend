@@ -3,8 +3,7 @@
     import { page } from '$app/stores';
 
     import * as MQTT from '$lib/mqtt';
-    import { bridge_info, devices, device_states } from '$lib/mqtt';
-    import type { Device, DeviceState } from '$lib/types';
+    import { devices } from '$lib/mqtt';
 
     import InlineEdit from '$components/InlineEdit.svelte';
     import type { SaveResult } from '$components/InlineEdit.svelte';
@@ -17,12 +16,15 @@
         'Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet voluptate voluptate dolor minim nulla est proident. Nostrud officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex occaecat reprehenderit commodo officia dolor Lorem duis laboris cupidatat officia voluptate. Culpa proident adipisicing id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua reprehenderit commodo ex non excepteur duis sunt velit enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur et est culpa et culpa duis.';
 
     const key = $page.params.device;
-    $: device_model = $devices.find((dev: Device) => dev.ieee_address === key);
-    $: device = $bridge_info?.config?.devices[key];
-    $: device_state = $device_states[key as keyof DeviceState];
+    $: dev = $devices.find((d) => d.ieee_address === key);
+
+    // $: device_model = $bdevices.find((dev: Device) => dev.ieee_address === key);
+    $: device_model = dev?.device;
+    // $: device = $bridge_info?.config?.devices[key];
+    $: device = dev?.config_info;
 
     function updateFriendlyname(result: SaveResult): Promise<string> {
-        return MQTT.rename(device.friendly_name, result.value, result.toggleChecked);
+        return MQTT.rename(device!.friendly_name, result.value, result.toggleChecked);
     }
 
     function updateDescription(result: SaveResult): Promise<string> {
@@ -30,7 +32,7 @@
     }
 </script>
 
-{#if device}
+{#if device && device_model}
     <div class="card p-4 space-y-8">
         <div class="flex flex-wrap gap-4 justify-center items-center flex-col sm:flex-row">
             <DeviceImage image={device_model?.definition.model || ''} />

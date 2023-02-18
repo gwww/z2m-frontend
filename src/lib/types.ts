@@ -113,12 +113,17 @@ export interface AdvancedConfig {
     // Lots more stuff
 }
 
+export interface ConfigInfoDevice {
+    friendly_name: string,
+    description?: string,
+}
+
 export interface ConfigInfo {
     advanced: AdvancedConfig;
     availability?: Availability;
     blocklist: string[];
     device_options: NotDefinedYet;
-    devices: NotDefinedYet;
+    devices: Dictionary<ConfigInfoDevice>,
     external_converters: string[];
     frontend: NotDefinedYet;
     groups: NotDefinedYet;
@@ -140,4 +145,14 @@ export interface BridgeInfo {
     permit_join: boolean;
     restart_required: boolean;
     version: string;
+}
+
+export interface ConsolidatedDevice {
+    friendly_name: string,
+    description?: string,
+    availability?: boolean,
+    ieee_address: string,
+    config_info?: ConfigInfoDevice,
+    device?: Device,
+    state?: DeviceState,
 }
