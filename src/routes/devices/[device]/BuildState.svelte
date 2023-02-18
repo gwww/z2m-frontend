@@ -1,10 +1,10 @@
 <script lang="ts">
     import { EXPOSED_FEATURE_TYPE } from '$lib/types';
-    import type { Dictionary, ExposedItemBase, Exposes } from '$lib/types';
+    import type { Dictionary, Exposes } from '$lib/types';
     import * as Case from '$lib/utils/case';
     import WrappedControl from './WrappedControl.svelte';
-    import BinaryControl from './BinaryControl.svelte';
 
+    // TODO: should types include undefined?
     export let type = '';
     export let features: Exposes[] = [];
     export let state: Dictionary<any>;
