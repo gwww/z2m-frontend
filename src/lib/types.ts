@@ -23,54 +23,54 @@ export enum AccessType {
 }
 
 export const EXPOSED_TYPE = ['binary', 'enum', 'list', 'numeric', 'text'] as const;
-export type ExposedType = typeof EXPOSED_TYPE[number];
+export type ExposedType = (typeof EXPOSED_TYPE)[number];
 
 export const EXPOSED_FEATURE_TYPE = ['composite', 'light', 'switch'] as const;
-export type ExposedFeatureType = typeof EXPOSED_FEATURE_TYPE[number]
+export type ExposedFeatureType = (typeof EXPOSED_FEATURE_TYPE)[number];
 
 export interface ExposedItemBase {
-    type: ExposedType,
-    name: string,
-    property: string,
-    access: AccessType,
-    description: string,
-    unit?: string,
+    type: ExposedType;
+    name: string;
+    property: string;
+    access: AccessType;
+    description: string;
+    unit?: string;
 }
 
 export interface ExposedBinary extends ExposedItemBase {
-    type: 'binary'
-    value_on: string,
-    value_off: string,
-    value_toggle?: string,
+    type: 'binary';
+    value_on: string;
+    value_off: string;
+    value_toggle?: string;
 }
 
 export interface ExposedEnum extends ExposedItemBase {
-    type: 'enum',
-    values: string[],
+    type: 'enum';
+    values: string[];
 }
 
 export interface NumericPreset {
-    name: string,
-    description: string,
-    value: number,
+    name: string;
+    description: string;
+    value: number;
 }
 
 export interface ExposedNumeric extends ExposedItemBase {
-    type: 'numeric',
-    value_min?: string,
-    value_max?: string,
-    presets: NumericPreset[],
+    type: 'numeric';
+    value_min?: string;
+    value_max?: string;
+    presets: NumericPreset[];
 }
 
 export interface ExposedText extends ExposedItemBase {
-    type: 'text',
+    type: 'text';
 }
 
 export interface ExposedFeature {
-    type: ExposedFeatureType,
-    features: ExposedItemBase[],
-    property?: string,
-    name?: string,
+    type: ExposedFeatureType;
+    features: ExposedItemBase[];
+    property?: string;
+    name?: string;
 }
 
 export type Exposes = ExposedFeature | ExposedItemBase;
@@ -83,7 +83,7 @@ export interface DeviceDefinition {
     vendor: string;
     supports_ota: boolean;
 
-    exposes: Exposes[],
+    exposes: Exposes[];
     options: NotDefinedYet;
 }
 
@@ -114,8 +114,8 @@ export interface AdvancedConfig {
 }
 
 export interface ConfigInfoDevice {
-    friendly_name: string,
-    description?: string,
+    friendly_name: string;
+    description?: string;
 }
 
 export interface ConfigInfo {
@@ -123,7 +123,7 @@ export interface ConfigInfo {
     availability?: Availability;
     blocklist: string[];
     device_options: NotDefinedYet;
-    devices: Dictionary<ConfigInfoDevice>,
+    devices: Dictionary<ConfigInfoDevice>;
     external_converters: string[];
     frontend: NotDefinedYet;
     groups: NotDefinedYet;
@@ -148,11 +148,11 @@ export interface BridgeInfo {
 }
 
 export interface ConsolidatedDevice {
-    friendly_name: string,
-    description?: string,
-    availability?: boolean,
-    ieee_address: string,
-    config_info?: ConfigInfoDevice,
-    device?: Device,
-    state?: DeviceState,
+    friendly_name: string;
+    description?: string;
+    availability?: boolean;
+    ieee_address: string;
+    config_info?: ConfigInfoDevice;
+    device?: Device;
+    state?: DeviceState;
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import * as Case from './case'
+import * as Case from './case';
 
 describe('Camel case', () => {
     it('Simple test', () => {

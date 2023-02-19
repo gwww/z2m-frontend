@@ -11,8 +11,8 @@
     import DeviceImage from './DeviceImage.svelte';
     import StateControl from './StateControl.svelte';
 
-    let tabCurrent: number = 0;
-    const desc =
+    let currentTab: number = 0;
+    const lorem =
         'Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet voluptate voluptate dolor minim nulla est proident. Nostrud officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex occaecat reprehenderit commodo officia dolor Lorem duis laboris cupidatat officia voluptate. Culpa proident adipisicing id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua reprehenderit commodo ex non excepteur duis sunt velit enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur et est culpa et culpa duis.';
 
     const key = $page.params.device;
@@ -61,31 +61,31 @@
             hover="hover:variant-soft-primary"
         >
             <!-- Tabs -->
-            <Tab bind:group={tabCurrent} name="state" value={0}>
+            <Tab bind:group={currentTab} name="state" value={0}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-book" /></svelte:fragment>
                 State/Control
             </Tab>
-            <Tab bind:group={tabCurrent} name="attributes" value={1}>
+            <Tab bind:group={currentTab} name="attributes" value={1}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-film" /></svelte:fragment>
                 Attributes
             </Tab>
-            <Tab bind:group={tabCurrent} name="settings" value={2}>
+            <Tab bind:group={currentTab} name="settings" value={2}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-tv" /></svelte:fragment>
                 Settings
             </Tab>
-            <Tab bind:group={tabCurrent} name="advanced" value={3}>
+            <Tab bind:group={currentTab} name="advanced" value={3}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-tv" /></svelte:fragment>
                 Advanced
             </Tab>
             <svelte:fragment slot="panel">
-                {#if tabCurrent === 0}
+                {#if currentTab === 0}
                     <StateControl id={key} />
-                {:else if tabCurrent === 1}
+                {:else if currentTab === 1}
                     <Attributes id={key} />
-                {:else if tabCurrent === 2}
-                    <p>{desc}</p>
-                {:else if tabCurrent === 3}
-                    <p>{desc}</p>
+                {:else if currentTab === 2}
+                    <p>{lorem}</p>
+                {:else if currentTab === 3}
+                    <p>{lorem}</p>
                 {/if}
             </svelte:fragment>
         </TabGroup>
