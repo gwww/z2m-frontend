@@ -91,5 +91,5 @@
         </TabGroup>
     </div>
 {:else}
-    <h3>Error: device {key} is unknown.</h3>
+    <p class="!text-2xl">Loading device {key} from MQTT...</p>
 {/if}
