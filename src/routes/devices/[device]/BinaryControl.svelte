@@ -5,6 +5,8 @@
 
     let feature: ExposedItemBase = $$props as ExposedItemBase;
 
+    // TODO: state may not be reactive
+    // See: https://imfeld.dev/writing/svelte_context for solution
     const state = getContext('state');
     console.log('BinaryControl', feature, state);
 
