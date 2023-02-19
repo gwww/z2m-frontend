@@ -1,9 +1,12 @@
 <script lang="ts">
     import { SlideToggle } from '@skeletonlabs/skeleton';
     import type { ExposedItemBase } from '$lib/types';
+    import { getContext } from 'svelte';
 
-    let control: ExposedItemBase = $$props as ExposedItemBase;
-    console.log('Other is In BinaryControl...', control);
+    let feature: ExposedItemBase = $$props as ExposedItemBase;
+
+    $: state = getContext('state');
+    $: console.log('BinaryControl', feature, state);
 
     let value: boolean;
     const changed = () => {

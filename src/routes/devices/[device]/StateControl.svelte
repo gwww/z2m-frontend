@@ -2,13 +2,15 @@
     import { devices, bridge_info } from '$lib/mqtt';
     import BuildState from './BuildState.svelte';
     import * as timeago from 'timeago.js';
+    import { setContext } from 'svelte';
 
     export let id: string;
 
     $: device = $devices.find((d) => d.ieee_address === id);
 
     $: state = device?.state;
-    $: console.log('In StateControl, device is:', device, state);
+    $: setContext('state', state);
+    // $: console.log('In StateControl device and state:', device, state);
 
     $: availability_configured = $devices.some((d) => d.availability !== undefined);
     $: online_html = 'Not available';
