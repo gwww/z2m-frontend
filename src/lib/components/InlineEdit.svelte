@@ -18,7 +18,7 @@
     export let options: string[] = [];
     export let promise: Promise<string> | undefined = undefined;
     export let toggle: string = '';
-    export let callback: saveCallback;
+    export let saveCallback: saveCallback;
 
     let readonly = true,
         input: any,
@@ -33,7 +33,8 @@
     }
 
     function edit() {
-        readonly && (readonly = false);
+        readonly = false;
+        promise = undefined;
     }
 
     function cancel() {
@@ -46,7 +47,7 @@
     async function save() {
         readonly = true;
         value = input.value;
-        promise = callback({ value, toggleChecked });
+        promise = saveCallback({ value, toggleChecked });
     }
 
     let name: string;
