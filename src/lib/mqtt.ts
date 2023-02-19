@@ -3,12 +3,8 @@ import mqtt_client from 'u8-mqtt/esm/web/index';
 import type { BridgeInfo, ConsolidatedDevice, Device, DeviceState, Dictionary, GenericObject } from '$lib/types';
 import generateId from '$lib/utils/generateId'
 
-import { get, writable, type Writable } from 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 export const bridge_info: Writable<BridgeInfo | undefined> = writable();
-export const bdevices: Writable<Device[]> = writable([]);
-export const device_states: Writable<Dictionary<DeviceState>> = writable({});
-export const device_available: Writable<Dictionary<boolean>> = writable({});
-
 export const devices: Writable<ConsolidatedDevice[]> = writable([])
 
 let my_mqtt: MQTT_handler;
@@ -99,11 +95,6 @@ export class MQTT_handler {
         if (device_name === 'bridge') return;
         const state_pkt = pkt as unknown as DeviceState
 
-        device_states.update((states) => {
-            states[device_name] = pkt as unknown as DeviceState;
-            return states;
-        });
-
         devices.update(devs => {
             const device = get_device_from_name(devs, device_name)
             if (device) device.state = state_pkt
@@ -114,12 +105,6 @@ export class MQTT_handler {
     handle_availability_msg(pkt: string, params: Dictionary<string>) {
         // console.log('avail packet binary', params, pkt)
         const device_name = params['device'];
-
-        // TODO: Cleanup?
-        device_available.update((avail) => {
-            avail[device_name] = pkt === 'online';
-            return avail;
-        });
 
         devices.update(devs => {
             const device = get_device_from_name(devs, device_name)
@@ -133,7 +118,6 @@ export class MQTT_handler {
         const cmd = params['cmd'];
         if (cmd === 'devices') {
             const devices_pkt = pkt as unknown as Device[];
-            bdevices.set(devices_pkt); // TODO: Cleanup?
 
             devices.update(devs => {
                 devices_pkt.forEach(dev => {
@@ -177,19 +161,6 @@ const update_devices = (devices: ConsolidatedDevice[], ieee_addr: string, update
 const get_device_from_name = (devices: ConsolidatedDevice[], name: string): ConsolidatedDevice | undefined => {
     return devices.find(d => d.ieee_address === name || d.config_info?.friendly_name === name)
 }
-
-// const remove_deleted_devices = (devices: ConsolidatedDevice[], new_keys: string[]) => {
-//     const to_remove: number[] = []
-//     devices.forEach((d, i) => {
-//         if (!new_keys.find(e => d.ieee_address === e)) to_remove.push(i)
-//     })
-// }
-//
-// function cleanup_devices(devices: Dictionary<ConsolidatedDevice>, new_keys: string[]) {
-//     const existing_keys = Object.keys(devices)
-//     const difference = existing_keys.filter(x => !new_keys.includes(x));
-//     difference.forEach((entry) => delete devices[entry])
-// }
 
 export async function rename(from: string, to: string, homeassistant_rename: boolean) {
     return send('bridge/request/device/rename', { from, to, homeassistant_rename })
