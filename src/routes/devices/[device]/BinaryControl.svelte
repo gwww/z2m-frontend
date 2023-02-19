@@ -5,8 +5,8 @@
 
     let feature: ExposedItemBase = $$props as ExposedItemBase;
 
-    $: state = getContext('state');
-    $: console.log('BinaryControl', feature, state);
+    const state = getContext('state');
+    console.log('BinaryControl', feature, state);
 
     let value: boolean;
     const changed = () => {

@@ -8,9 +8,9 @@
 
     $: device = $devices.find((d) => d.ieee_address === id);
 
+    // https://imfeld.dev/writing/svelte_context
     $: state = device?.state;
     $: setContext('state', state);
-    // $: console.log('In StateControl device and state:', device, state);
 
     $: availability_configured = $devices.some((d) => d.availability !== undefined);
     $: online_html = 'Not available';

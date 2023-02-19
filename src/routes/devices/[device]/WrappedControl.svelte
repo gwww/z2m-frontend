@@ -12,6 +12,6 @@
     <div class="text-sm pb-2">{feature.description}</div>
 
     {#if feature.type === 'binary'}
-        <BinaryControl {feature} />
+        <BinaryControl {...feature} />
     {/if}
 </div>

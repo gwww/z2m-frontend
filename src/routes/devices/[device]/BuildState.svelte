@@ -11,14 +11,14 @@
         return (EXPOSED_FEATURE_TYPE as ReadonlyArray<string>).includes(_type);
     };
 
-    const getCompositeTitle = (type: string, props: Record<string, string>) => {
-        if (type === 'composite') return Case.any2Title(props.name);
-        return `${Case.any2Title(type)} Device`;
+    const getCompositeTitle = (_type: string, name: string) => {
+        if (_type === 'composite') return Case.any2Title(name);
+        return `${Case.any2Title(_type)} Device`;
     };
 </script>
 
 {#if isComposite(type)}
-    {@const title = getCompositeTitle(type, $$restProps)}
+    {@const title = getCompositeTitle(type, $$restProps.name)}
     <div class="card p-4 mt-4 variant-ringed-tertiary col-span-full">
         {#if title}
             <p class="p-1 !text-xl">{title}</p>
@@ -38,15 +38,4 @@
     </div>
 {:else if !$$restProps.access || $$restProps.access === 7}
     <WrappedControl {...$$props} />
-
-    <!-- {@const control = $$restProps} -->
-    <!-- <div class={'p-4'}> -->
-    <!--     <div class="font-bold text-primary-500 text-lg pb-1"> -->
-    <!--         {Case.any2Title($$restProps.property)} -->
-    <!--     </div> -->
-    <!--     <div class="text-sm pb-2">{$$restProps.description}</div> -->
-    <!--     {#if type === 'binary'} -->
-    <!--         <BinaryControl {...$$props} /> -->
-    <!--     {/if} -->
-    <!-- </div> -->
 {/if}
