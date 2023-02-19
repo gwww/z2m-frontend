@@ -8,6 +8,7 @@
     $: device = $devices.find((d) => d.ieee_address === id);
 
     $: state = device?.state;
+    $: console.log('In StateControl, device is:', device, state);
 
     $: availability_configured = $devices.some((d) => d.availability !== undefined);
     $: online_html = 'Not available';
@@ -27,7 +28,7 @@
         last_seen = timeago.format(state.last_seen!);
     }
 
-    $: exposes = { type: '_root_', state: state!, features: device!.device!.definition.exposes };
+    $: exposes = { type: '_root_', features: device!.device!.definition.exposes };
 </script>
 
 <div class="flex justify-evenly mt-4 mb-8">
