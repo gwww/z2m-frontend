@@ -18,9 +18,7 @@
     const key = $page.params.device;
     $: dev = $devices.find((d) => d.ieee_address === key);
 
-    // $: device_model = $bdevices.find((dev: Device) => dev.ieee_address === key);
     $: device_model = dev?.device;
-    // $: device = $bridge_info?.config?.devices[key];
     $: device = dev?.config_info;
 
     function updateFriendlyname(result: SaveResult): Promise<string> {
@@ -35,7 +33,7 @@
 {#if device && device_model}
     <div class="card p-4 space-y-8">
         <div class="flex flex-wrap gap-4 justify-center items-center flex-col sm:flex-row">
-            <DeviceImage image={device_model?.definition.model || ''} />
+            <DeviceImage image={device_model.definition.model || ''} />
 
             <div class="w-full md:w-3/5 lg:w-2/5">
                 <InlineEdit
@@ -44,7 +42,7 @@
                     placeholder="Name..."
                     value={device.friendly_name}
                     toggle={'Update Home Assistant Entity'}
-                    callback={updateFriendlyname}
+                    saveCallback={updateFriendlyname}
                 />
                 <div class="mt-9" />
                 <InlineEdit
@@ -52,7 +50,7 @@
                     type="text"
                     placeholder="Description..."
                     value={device.description}
-                    callback={updateDescription}
+                    saveCallback={updateDescription}
                 />
             </div>
         </div>

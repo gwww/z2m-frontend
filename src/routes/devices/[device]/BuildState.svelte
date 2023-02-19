@@ -9,8 +9,6 @@
     export let features: Exposes[] = [];
     export let state: Dictionary<any>;
 
-    $: console.log('In BuildState:', state);
-
     function isComposite(_type: string): boolean {
         return (EXPOSED_FEATURE_TYPE as ReadonlyArray<string>).includes(_type);
     }
@@ -41,6 +39,7 @@
         {/each}
     </div>
 {:else if !$$restProps.access || $$restProps.access === 7}
+    <WrappedControl {...$$props} {state} />
     <!-- {@const control = $$restProps} -->
     <!-- <div class={'p-4'}> -->
     <!--     <div class="font-bold text-primary-500 text-lg pb-1"> -->
@@ -51,5 +50,4 @@
     <!--         <BinaryControl {...$$props} /> -->
     <!--     {/if} -->
     <!-- </div> -->
-    <WrappedControl {...$$props} {state} />
 {/if}
