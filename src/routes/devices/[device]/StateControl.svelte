@@ -30,7 +30,7 @@
         last_seen = timeago.format(state.last_seen!);
     }
 
-    $: exposes = { type: '_root_', features: device!.device!.definition.exposes };
+    $: exposes = { type: '_root_', features: device?.device?.definition.exposes };
 </script>
 
 <div class="flex justify-evenly mt-4 mb-8">
