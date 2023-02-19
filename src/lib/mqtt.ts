@@ -159,7 +159,7 @@ export class MQTT_handler {
 }
 
 const update_devices = (devices: ConsolidatedDevice[], ieee_addr: string, update: any) => {
-    let idx = devices.findIndex((d) => d.ieee_address === ieee_addr);
+    const idx = devices.findIndex((d) => d.ieee_address === ieee_addr);
     if (idx < 0) {
         devices.push(update);
     } else {

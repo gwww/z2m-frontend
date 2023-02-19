@@ -5,7 +5,7 @@
     export let columns: Column[];
     export let data: Array<any>;
     export let styles: Styles = {};
-    export let tableId: string = '';
+    export let tableId = '';
 </script>
 
 <div class={styles.container ?? ''}>

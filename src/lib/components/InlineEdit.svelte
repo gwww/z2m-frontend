@@ -17,7 +17,7 @@
     export let rows = 1;
     export let options: string[] = [];
     export let promise: Promise<string> | undefined = undefined;
-    export let toggle: string = '';
+    export let toggle = '';
     export let saveCallback: saveCallback;
 
     let readonly = true,

@@ -7,7 +7,7 @@ export const sortEvent = (e: Event) => {
 };
 
 export const sortTable = (thead: HTMLElement, column_number: number) => {
-    let qs = `tr th:nth-of-type(${column_number})`;
+    const qs = `tr th:nth-of-type(${column_number})`;
     handleSortTarget(thead.querySelector(qs)!);
 };
 
@@ -35,18 +35,18 @@ const handleSortTarget = (sortTarget: HTMLElement) => {
 const performSort = (table: Element, column_number: number, ascending: boolean) => {
     // get all the rows from the tbody:
     const tbody = table.querySelector('tbody')!;
-    let rows = Array.from(tbody.querySelectorAll('tr'));
+    const rows = Array.from(tbody.querySelectorAll('tr'));
 
-    let dir = ascending ? 1 : -1;
-    let comparer = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0);
+    const dir = ascending ? 1 : -1;
+    const comparer = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0);
 
     // set up the queryselector for getting the indicated column from a row
-    let qs = `td:nth-child(${column_number})`;
+    const qs = `td:nth-child(${column_number})`;
 
     // and then just... sort the rows:
     rows.sort((r1, r2) => {
-        let t1 = r1.querySelector(qs)!;
-        let t2 = r2.querySelector(qs)!;
+        const t1 = r1.querySelector(qs)!;
+        const t2 = r2.querySelector(qs)!;
         return comparer(t1.textContent, t2.textContent) * dir;
     });
 
