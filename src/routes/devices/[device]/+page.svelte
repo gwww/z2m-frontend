@@ -22,6 +22,8 @@
     $: device = dev?.config_info;
 
     function updateFriendlyname(result: SaveResult): Promise<string> {
+        // device is null checked in markup section
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return MQTT.rename(device!.friendly_name, result.value, result.toggleChecked);
     }
 

@@ -3,6 +3,7 @@
     import BuildState from './BuildState.svelte';
     import * as timeago from 'timeago.js';
     import { setContext } from 'svelte';
+    import { writable } from 'svelte/store';
 
     export let id: string;
 
@@ -27,7 +28,7 @@
         $bridge_info.config.advanced.last_seen !== 'disable';
     $: last_seen = 'Not available';
     $: if (state?.last_seen) {
-        last_seen = timeago.format(state.last_seen!);
+        last_seen = timeago.format(state.last_seen);
     }
 
     $: exposes = { type: '_root_', features: device?.device?.definition.exposes };

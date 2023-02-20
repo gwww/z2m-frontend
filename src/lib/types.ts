@@ -1,10 +1,11 @@
-// Placeholder for object attributes not used by this app
-// As the code develops the NotDefinedYet may be replaced with actual type info
-export type NotDefinedYet = any;
-
 export interface Dictionary<T> {
     [key: string]: T;
 }
+
+// Placeholder for object attributes not used by this app
+// As the code develops the NotDefinedYet may be replaced with actual type info
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type NotDefinedYet = any;
 
 export type GenericObject = Record<string, unknown>;
 

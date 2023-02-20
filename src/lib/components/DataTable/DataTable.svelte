@@ -3,6 +3,7 @@
     import DataTableHeader from './DataTableHeader.svelte';
 
     export let columns: Column[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     export let data: Array<any>;
     export let styles: Styles = {};
     export let tableId = '';

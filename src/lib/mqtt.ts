@@ -1,5 +1,4 @@
-// @ts-ignore
-import mqtt_client from 'u8-mqtt/esm/web/index';
+import mqtt_client from 'u8-mqtt';
 import type {
     BridgeInfo,
     ConsolidatedDevice,
@@ -35,6 +34,7 @@ export class MQTT_handler {
         this.mqtt = mqtt_client({ on_live: this.on_live.bind(this) })
             .with_websock(this.server)
             .with_autoreconnect(5000);
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         my_mqtt = this; // Cannot instantiate another instance of MQTT_handler
     }
 
@@ -75,13 +75,13 @@ export class MQTT_handler {
     handle_msg(
         pkt: any,
         params: Dictionary<string>,
-        ctx: any,
+        ctx: GenericObject,
         handler: (decoded: any, params: Dictionary<string>) => void
     ) {
-        // console.log(pkt.topic, params)
+        console.log(pkt.topic, params)
         ctx.done = true; // Stops matches on further topics
 
-        let decoded: any;
+        let decoded: any; // eslint-disable-line @typescript-eslint/no-explicit-any
         try {
             decoded = pkt.json();
         } catch {
@@ -91,6 +91,7 @@ export class MQTT_handler {
         // console.log("Devices Composite Object...", get(devices))
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     handle_bridge_response(pkt: GenericObject, params: Dictionary<string>) {
         // console.log('bridge response json', params, pkt)
         const transaction: string = <string>pkt.transaction;
@@ -153,7 +154,7 @@ export class MQTT_handler {
         }
     }
 
-    unhandled_msg(pkt: any, params: Dictionary<string>) {
+    unhandled_msg(pkt: GenericObject, params: Dictionary<string>) {
         console.debug('unhandled packet:', params, pkt);
     }
 }
@@ -183,9 +184,9 @@ export async function set_description(id: string, description: string) {
 }
 
 interface Request {
-    timer: any;
-    resolve: any;
-    reject: any;
+    timer: ReturnType<typeof setTimeout>;
+    resolve: (value: string | PromiseLike<string>) => void;
+    reject: (reason?: string) => void;
 }
 
 class MQTTOutstandingRequests {
