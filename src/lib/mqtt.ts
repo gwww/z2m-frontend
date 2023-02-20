@@ -126,9 +126,9 @@ export class MQTT_handler {
 
     handle_bridge_msg(pkt: GenericObject, params: Dictionary<string>) {
         const cmd = params['cmd'];
-        if (cmd === 'logging') return
+        if (cmd === 'logging') return;
 
-        console.log('bridge packet json', params, pkt)
+        console.log('bridge packet json', params, pkt);
 
         if (cmd === 'devices') {
             const devices_pkt = pkt as unknown as Device[];
@@ -170,7 +170,7 @@ const update_devices = (devices: ConsolidatedDevice[], ieee_addr: string, update
     } else {
         devices[idx] = { ...devices[idx], ...update };
     }
-    devices[idx]._touched = true
+    devices[idx]._touched = true;
 };
 
 const delete_not_updated_devices = (devices: ConsolidatedDevice[]) => {
@@ -182,7 +182,7 @@ const delete_not_updated_devices = (devices: ConsolidatedDevice[]) => {
             devices[i]._touched = undefined;
         }
     }
-}
+};
 
 const get_device_from_name = (
     devices: ConsolidatedDevice[],
