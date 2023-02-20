@@ -78,7 +78,7 @@ export class MQTT_handler {
         ctx: GenericObject,
         handler: (decoded: any, params: Dictionary<string>) => void
     ) {
-        console.log(pkt.topic, params)
+        // console.log(pkt.topic, params)
         ctx.done = true; // Stops matches on further topics
 
         let decoded: any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -125,8 +125,11 @@ export class MQTT_handler {
     }
 
     handle_bridge_msg(pkt: GenericObject, params: Dictionary<string>) {
-        // console.log('bridge packet json', params, pkt)
         const cmd = params['cmd'];
+        if (cmd === 'logging') return
+
+        console.log('bridge packet json', params, pkt)
+
         if (cmd === 'devices') {
             const devices_pkt = pkt as unknown as Device[];
 
@@ -134,6 +137,7 @@ export class MQTT_handler {
                 devices_pkt.forEach((dev) => {
                     update_devices(devs, dev.ieee_address, { device: dev });
                 });
+                delete_not_updated_devices(devs);
                 return devs;
             });
         } else if (cmd === 'info') {
@@ -141,7 +145,6 @@ export class MQTT_handler {
             bridge_info.set(bridge_info_pkt);
 
             devices.update((devs) => {
-                devs = [];
                 Object.keys(bridge_info_pkt.config.devices).forEach((ieee_addr) => {
                     const dev = {
                         ieee_address: ieee_addr,
@@ -149,6 +152,7 @@ export class MQTT_handler {
                     };
                     update_devices(devs, ieee_addr, dev);
                 });
+                delete_not_updated_devices(devs);
                 return devs;
             });
         }
@@ -160,13 +164,25 @@ export class MQTT_handler {
 }
 
 const update_devices = (devices: ConsolidatedDevice[], ieee_addr: string, update: any) => {
-    const idx = devices.findIndex((d) => d.ieee_address === ieee_addr);
+    let idx = devices.findIndex((d) => d.ieee_address === ieee_addr);
     if (idx < 0) {
-        devices.push(update);
+        idx = devices.push(update) - 1;
     } else {
         devices[idx] = { ...devices[idx], ...update };
     }
+    devices[idx]._touched = true
 };
+
+const delete_not_updated_devices = (devices: ConsolidatedDevice[]) => {
+    let i = devices.length;
+    while (i--) {
+        if (!devices[i]._touched) {
+            delete devices[i];
+        } else {
+            devices[i]._touched = undefined;
+        }
+    }
+}
 
 const get_device_from_name = (
     devices: ConsolidatedDevice[],

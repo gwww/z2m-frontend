@@ -156,4 +156,5 @@ export interface ConsolidatedDevice {
     config_info?: ConfigInfoDevice;
     device?: Device;
     state?: DeviceState;
+    _touched?: boolean;
 }
