@@ -10,7 +10,7 @@
     $: device = $devices.find((d) => d.ieee_address === id);
 
     // https://imfeld.dev/writing/svelte_context
-    $: state = device?.state;
+    $: state = writable(device?.state);
     $: setContext('state', state);
 
     $: availability_configured = $devices.some((d) => d.availability !== undefined);
@@ -27,8 +27,8 @@
         $bridge_info?.config.advanced.last_seen &&
         $bridge_info.config.advanced.last_seen !== 'disable';
     $: last_seen = 'Not available';
-    $: if (state?.last_seen) {
-        last_seen = timeago.format(state.last_seen);
+    $: if ($state?.last_seen) {
+        last_seen = timeago.format($state.last_seen);
     }
 
     $: exposes = { type: '_root_', features: device?.device?.definition.exposes };
