@@ -25,12 +25,14 @@
     };
 </script>
 
-<SlideToggle
-    name="slider"
-    size="sm"
-    active="bg-primary-500"
-    bind:checked={value}
-    on:change={changed}
-/>
+<div>
+    <SlideToggle
+        name="slider"
+        size="sm"
+        active="bg-primary-500"
+        bind:checked={value}
+        on:change={changed}
+    />
+</div>
 
 <RequestStatus {promise} show={promise !== undefined} />
