@@ -4,7 +4,7 @@
         value: string;
         toggleChecked: boolean;
     }
-    export interface saveCallback {
+    export interface _saveCallback {
         (result: SaveResult): Promise<string>;
     }
 </script>
@@ -12,16 +12,17 @@
 <script lang="ts">
     import { SlideToggle } from '@skeletonlabs/skeleton';
     import TimedShow from './TimedShow.svelte';
+    import RequestStatus from '$lib/components/RequestStatus.svelte';
 
     export let value = '';
     export let rows = 1;
     export let options: string[] = [];
     export let promise: Promise<string> | undefined = undefined;
     export let toggle = '';
-    export let saveCallback: saveCallback;
+    export let saveCallback: _saveCallback;
 
     let readonly = true,
-        input: any,
+        input: HTMLTextAreaElement | HTMLInputElement,
         toggleChecked = false,
         attrs: any,
         list: number;
@@ -49,6 +50,10 @@
         value = input.value;
         promise = saveCallback({ value, toggleChecked });
     }
+
+    const doneCallback = () => {
+        promise = undefined;
+    };
 
     let name: string;
 </script>
@@ -115,17 +120,19 @@
             </button>
         </div>
     {/if}
+
+    <!-- <RequestStatus {promise} show={readonly} /> -->
     {#if promise && readonly}
         {#await promise}
             <TimedShow after={250}
                 ><div class="left-3 mt-1 text-sm text-tertiary-500">Updating...</div></TimedShow
             >
         {:then success}
-            <TimedShow showFor={2500}
+            <TimedShow showFor={2500} {doneCallback}
                 ><div class="left-3 mt-1 text-sm text-success-500">Updated</div></TimedShow
             >
         {:catch error}
-            <TimedShow showFor={10000}
+            <TimedShow showFor={10000} {doneCallback}
                 ><div class="left-3 mt-1 text-sm text-error-500">{error}</div></TimedShow
             >
         {/await}

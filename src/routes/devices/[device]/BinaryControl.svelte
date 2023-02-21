@@ -1,17 +1,27 @@
 <script lang="ts">
-    import { SlideToggle } from '@skeletonlabs/skeleton';
-    import type { ExposedItemBase, GenericObject } from '$lib/types';
+    import type { DeviceState, ExposedBinary } from '$lib/types';
     import { getContext } from 'svelte';
+    import * as MQTT from '$lib/mqtt';
+    import { SlideToggle } from '@skeletonlabs/skeleton';
+    import RequestStatus from '$lib/components/RequestStatus.svelte';
 
-    let feature: ExposedItemBase = $$props as ExposedItemBase;
-
-    // See: https://imfeld.dev/writing/svelte_context getContext discussion
-    let state = getContext('state') as SvelteStore<GenericObject>;
-    console.log('BinaryControl', feature, $state);
-
+    let state: SvelteStore<DeviceState>;
     let value: boolean;
+    let feature: ExposedBinary;
+    let promise: Promise<string> | undefined = undefined;
+    const id: string = getContext('id');
+
+    $: {
+        feature = $$props as ExposedBinary;
+        state = getContext('state');
+        value = $state?.state === feature.value_on;
+    }
+
     const changed = () => {
-        console.log(value);
+        promise = MQTT.set(id, {
+            // [feature.property]: value ? feature.value_off : feature.value_on,
+            [feature.property]: feature.value_off,
+        });
     };
 </script>
 
@@ -22,3 +32,5 @@
     bind:checked={value}
     on:change={changed}
 />
+
+<RequestStatus {promise} show={promise !== undefined} />

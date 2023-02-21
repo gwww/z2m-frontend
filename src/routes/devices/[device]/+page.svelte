@@ -10,16 +10,34 @@
     import Attributes from './Attributes.svelte';
     import DeviceImage from './DeviceImage.svelte';
     import StateControl from './StateControl.svelte';
+    import type {
+        ConfigInfoDevice,
+        ConsolidatedDevice,
+        Device,
+        DeviceState,
+        Maybe,
+    } from '$lib/types';
+    import { setContext } from 'svelte';
+    import { writable, type Writable } from 'svelte/store';
 
     let currentTab = 0;
     const lorem =
         'Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet voluptate voluptate dolor minim nulla est proident. Nostrud officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex occaecat reprehenderit commodo officia dolor Lorem duis laboris cupidatat officia voluptate. Culpa proident adipisicing id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua reprehenderit commodo ex non excepteur duis sunt velit enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur et est culpa et culpa duis.';
 
     const key = $page.params.device;
-    $: dev = $devices.find((d) => d.ieee_address === key);
+    let dev: Maybe<ConsolidatedDevice>;
+    let device_model: Maybe<Device>;
+    let device: Maybe<ConfigInfoDevice>;
+    let state_store: Writable<DeviceState | undefined> = writable(undefined);
+    setContext('state', state_store);
+    setContext('id', key);
 
-    $: device_model = dev?.device;
-    $: device = dev?.config_info;
+    $: {
+        dev = $devices.find((d) => d.ieee_address === key);
+        device_model = dev?.device;
+        device = dev?.config_info;
+        $state_store = dev?.state;
+    }
 
     function updateFriendlyname(result: SaveResult): Promise<string> {
         // device is null checked in markup section

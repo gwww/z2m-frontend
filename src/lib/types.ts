@@ -7,11 +7,14 @@ export interface Dictionary<T> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type NotDefinedYet = any;
 
+export type Maybe<T> = T | undefined;
+
 export type GenericObject = Record<string, unknown>;
 
 export type PowerSource = 'Battery' | 'DC Source' | 'Mains (single phase)';
 
 export interface DeviceState {
+    state: string;
     last_seen?: string;
     battery?: number;
     linkquality: number;

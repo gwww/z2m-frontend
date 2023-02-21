@@ -3,6 +3,7 @@
 
     export let after = 0;
     export let showFor = 0;
+    export let doneCallback: () => void | undefined = () => {};
 
     let timer: ReturnType<typeof setTimeout>;
     let show = true;
@@ -12,13 +13,21 @@
         timer = setTimeout(() => {
             show = true;
             if (showFor) {
-                timer = setTimeout(() => (show = false), showFor);
+                timer = setTimeout(() => done(), showFor);
             }
         }, after);
     } else if (showFor) {
-        timer = setTimeout(() => (show = false), showFor);
+        timer = setTimeout(() => done(), showFor);
     }
-    onDestroy(() => clearTimeout(timer));
+
+    const done = () => {
+        show = false;
+        doneCallback();
+    };
+
+    onDestroy(() => {
+        clearTimeout(timer);
+    });
 </script>
 
 {#if show}

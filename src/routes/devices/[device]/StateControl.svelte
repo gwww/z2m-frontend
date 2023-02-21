@@ -2,16 +2,13 @@
     import { devices, bridge_info } from '$lib/mqtt';
     import BuildState from './BuildState.svelte';
     import * as timeago from 'timeago.js';
-    import { setContext } from 'svelte';
-    import { writable } from 'svelte/store';
+    import { getContext } from 'svelte';
+    import type { DeviceState } from '$lib/types';
 
     export let id: string;
 
     $: device = $devices.find((d) => d.ieee_address === id);
-
-    // https://imfeld.dev/writing/svelte_context
-    $: state = writable(device?.state);
-    $: setContext('state', state);
+    $: state = getContext('state') as SvelteStore<DeviceState>;
 
     $: availability_configured = $devices.some((d) => d.availability !== undefined);
     $: online_html = 'Not available';
@@ -47,7 +44,7 @@
     {/if}
     {#if state}
         <div>
-            Link Quality: {state.linkquality}
+            Link Quality: {$state?.linkquality}
         </div>
     {/if}
 </div>
@@ -55,6 +52,3 @@
 <BuildState {...exposes} />
 
 <hr class="mt-4" />
-
-<style>
-</style>
