@@ -18,9 +18,7 @@
             >
         {:then success}
             <TimedShow showFor={2500} {doneCallback}
-                ><div class="mt-1 text-sm text-success-500">
-                    Updated {success}
-                </div></TimedShow
+                ><div class="mt-1 text-sm text-success-500">Updated</div></TimedShow
             >
         {:catch error}
             <TimedShow showFor={10000} {doneCallback}
