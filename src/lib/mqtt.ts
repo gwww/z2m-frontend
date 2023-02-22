@@ -1,5 +1,5 @@
 // import mqtt_client from 'u8-mqtt';
-import mqtt_client from 'u8-mqtt/esm/web/index'
+import mqtt_client from 'u8-mqtt/esm/web/index';
 import type {
     BridgeInfo,
     ConsolidatedDevice,
@@ -114,7 +114,7 @@ export class MQTT_handler {
         if (device_name === 'bridge') return;
         const state_pkt = pkt as unknown as DeviceState;
 
-        devices.update(devs => {
+        devices.update((devs) => {
             const device = get_device_from_name(devs, device_name);
             if (device) device.state = state_pkt;
             return devs;
@@ -141,7 +141,7 @@ export class MQTT_handler {
         if (cmd === 'devices') {
             const devices_pkt = pkt as unknown as Device[];
 
-            devices.update(devs => {
+            devices.update((devs) => {
                 devices_pkt.forEach((dev) => {
                     update_devices(devs, dev.ieee_address, { device: dev });
                 });
@@ -151,7 +151,7 @@ export class MQTT_handler {
             const bridge_info_pkt = pkt as unknown as BridgeInfo;
             bridge_info.set(bridge_info_pkt);
 
-            devices.update(devs => {
+            devices.update((devs) => {
                 Object.keys(bridge_info_pkt.config.devices).forEach((ieee_addr) => {
                     const dev = {
                         ieee_address: ieee_addr,
@@ -181,24 +181,24 @@ const update_devices = (devs: ConsolidatedDevice[], ieee_addr: string, update: a
 
 const delete_not_updated_devices = (devs: ConsolidatedDevice[]): ConsolidatedDevice[] => {
     let i = devs.length;
-    let deleted = 0
+    let deleted = 0;
     while (i--) {
         if (!devs[i]._touched) {
             delete devs[i];
-            deleted++
+            deleted++;
         } else {
             devs[i]._touched = undefined;
         }
     }
-    if (deleted) devs = devs.filter(() => true)
-    return devs
+    if (deleted) devs = devs.filter(() => true);
+    return devs;
 };
 
 const get_device_from_name = (
     devices: ConsolidatedDevice[],
     name: string
 ): ConsolidatedDevice | undefined => {
-    return devices.find(d => d.ieee_address === name || d.config_info?.friendly_name === name);
+    return devices.find((d) => d.ieee_address === name || d.config_info?.friendly_name === name);
 };
 
 interface Request {
@@ -246,19 +246,19 @@ const outstanding = new MQTTOutstandingRequests();
 const send = async (topic: string, payload: GenericObject): Promise<string> => {
     // console.debug('MQTT send:', topic, payload);
     const transaction = generateId();
-    const promise = outstanding.createRequest(transaction)
+    const promise = outstanding.createRequest(transaction);
     await my_mqtt.mqtt.json_send(`${my_mqtt.prefix}/${topic}`, { ...payload, transaction });
-    return promise
-}
+    return promise;
+};
 
 export const rename = async (from: string, to: string, homeassistant_rename: boolean) => {
     return send('bridge/request/device/rename', { from, to, homeassistant_rename });
-}
+};
 
 export const set_description = async (id: string, description: string) => {
     return send('bridge/request/device/options', { id, options: { description } });
-}
+};
 
 export const set = async (id: string, data: Dictionary<string>) => {
     return send(`${id}/set`, data);
-}
+};
