@@ -19,8 +19,7 @@
 
     const changed = () => {
         promise = MQTT.set(id, {
-            // [feature.property]: value ? feature.value_off : feature.value_on,
-            [feature.property]: feature.value_off,
+            [feature.property]: value ? feature.value_off : feature.value_on,
         });
     };
 </script>

@@ -64,7 +64,6 @@
                     toggle={'Update Home Assistant Entity'}
                     saveCallback={updateFriendlyname}
                 />
-                <div class="mt-9" />
                 <InlineEdit
                     class="input text-sm"
                     type="text"

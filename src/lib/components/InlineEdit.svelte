@@ -11,7 +11,6 @@
 
 <script lang="ts">
     import { SlideToggle } from '@skeletonlabs/skeleton';
-    import TimedShow from './TimedShow.svelte';
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 
     export let value = '';
@@ -39,6 +38,7 @@
     }
 
     function cancel() {
+        console.log('cancel');
         if (!readonly) {
             input.value = value;
             readonly = true;
@@ -49,18 +49,15 @@
         readonly = true;
         value = input.value;
         promise = saveCallback({ value, toggleChecked });
+        console.log('saving');
     }
-
-    const doneCallback = () => {
-        promise = undefined;
-    };
 
     let name: string;
 </script>
 
 <svelte:body on:click={cancel} />
 
-<div class="editable w-full">
+<div class="controls w-full">
     {#if rows > 1}
         <textarea
             bind:this={input}
@@ -91,7 +88,7 @@
     {/if}
 
     {#if !readonly}
-        <div class="flex items-center gap-2 mt-1">
+        <div class="flex items-center gap-2 mt-1 z-30">
             {#if toggle}
                 <span class="text-xs">{toggle}</span>
                 <span class="h-6 mr-2" on:click|stopPropagation on:keypress>
@@ -121,36 +118,20 @@
         </div>
     {/if}
 
-    <!-- <RequestStatus {promise} show={readonly} /> -->
-    {#if promise && readonly}
-        {#await promise}
-            <TimedShow after={250}
-                ><div class="left-3 mt-1 text-sm text-tertiary-500">Updating...</div></TimedShow
-            >
-        {:then success}
-            <TimedShow showFor={2500} {doneCallback}
-                ><div class="left-3 mt-1 text-sm text-success-500">Updated</div></TimedShow
-            >
-        {:catch error}
-            <TimedShow showFor={10000} {doneCallback}
-                ><div class="left-3 mt-1 text-sm text-error-500">{error}</div></TimedShow
-            >
-        {/await}
-    {/if}
+    <RequestStatus {promise} show={readonly} />
 </div>
 
 <style>
-    .editable {
+    .controls {
+        height: 24px;
+        width: 100%;
         position: relative;
-        display: inline-block;
-        overflow: visible;
+        margin-bottom: 24px;
     }
-    .editable div {
+    .controls div {
         position: absolute;
-        overflow: visible;
         right: 0;
     }
-
     [readonly]:hover {
         cursor: pointer !important;
     }
