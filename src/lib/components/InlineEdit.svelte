@@ -38,7 +38,6 @@
     }
 
     function cancel() {
-        console.log('cancel');
         if (!i_readonly) {
             input.value = value;
             i_readonly = true;
@@ -49,7 +48,6 @@
         i_readonly = true;
         value = input.value;
         promise = saveCallback({ value, toggleChecked });
-        console.log('saving');
     }
 
     let name: string;
