@@ -123,7 +123,6 @@
 
 <style>
     .controls {
-        /* height: 24px; */
         width: 100%;
         position: relative;
         margin-bottom: 2px;
