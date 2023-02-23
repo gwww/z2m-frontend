@@ -20,7 +20,7 @@
     export let toggle = '';
     export let saveCallback: _saveCallback;
 
-    let readonly = true,
+    let i_readonly = true,
         input: HTMLTextAreaElement | HTMLInputElement,
         toggleChecked = false,
         attrs: any,
@@ -33,20 +33,20 @@
     }
 
     function edit() {
-        readonly = false;
+        i_readonly = false;
         promise = undefined;
     }
 
     function cancel() {
         console.log('cancel');
-        if (!readonly) {
+        if (!i_readonly) {
             input.value = value;
-            readonly = true;
+            i_readonly = true;
         }
     }
 
     async function save() {
-        readonly = true;
+        i_readonly = true;
         value = input.value;
         promise = saveCallback({ value, toggleChecked });
         console.log('saving');
@@ -63,7 +63,7 @@
             bind:this={input}
             on:click|self|stopPropagation={edit}
             {...attrs}
-            {readonly}
+            {i_readonly}
             {value}
             {rows}
             {list}
@@ -73,7 +73,7 @@
             bind:this={input}
             on:click|self|stopPropagation={edit}
             {...attrs}
-            {readonly}
+            {i_readonly}
             {value}
             {list}
         />
@@ -87,7 +87,7 @@
         </datalist>
     {/if}
 
-    {#if !readonly}
+    {#if !i_readonly}
         <div class="flex items-center gap-2 mt-1 z-30">
             {#if toggle}
                 <span class="text-xs">{toggle}</span>
@@ -118,21 +118,23 @@
         </div>
     {/if}
 
-    <RequestStatus {promise} show={readonly} />
+    <RequestStatus {promise} show={i_readonly} />
 </div>
 
 <style>
     .controls {
-        height: 24px;
         width: 100%;
         position: relative;
-        margin-bottom: 24px;
+        margin-bottom: 2px;
     }
     .controls div {
         position: absolute;
         right: 0;
     }
-    [readonly]:hover {
+    [i_readonly]:hover {
         cursor: pointer !important;
+    }
+    [i_readonly] {
+        border-width: 1px !important;
     }
 </style>
