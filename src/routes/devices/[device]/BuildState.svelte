@@ -19,7 +19,8 @@
 
 {#if isComposite(type)}
     {@const title = getCompositeTitle(type, $$restProps.name)}
-    <div class="card p-4 mt-4 variant-ringed-tertiary col-span-full">
+    <!-- <div class="card p-4 mt-4 variant-ringed-tertiary col-span-full"> -->
+    <div class="p-4 mt-4 col-span-full">
         {#if title}
             <p class="p-1 !text-xl">{title}</p>
             <hr />
@@ -29,6 +30,7 @@
                 <svelte:self {...feature} />
             {/each}
         </div>
+        <!-- <hr /> -->
     </div>
 {:else if type === '_root_'}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
