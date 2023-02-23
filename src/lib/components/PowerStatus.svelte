@@ -2,6 +2,7 @@
     import type { PowerSource } from '$lib/types';
     import type { PopupSettings } from '@skeletonlabs/skeleton';
     import { popup } from '@skeletonlabs/skeleton';
+    import generateId from '$lib/utils/generateId';
 
     const batteries = [
         ['i-mdi-battery-outline', 'red'],
@@ -20,9 +21,10 @@
     export let powerSource: PowerSource;
     export let powerLevel: number;
 
+    const target = generateId();
     let powerTooltipSettings: PopupSettings = {
         event: 'hover',
-        target: 'powerPopup',
+        target: target,
         placement: 'top',
     };
 
@@ -49,15 +51,16 @@
     $: console.log('powerComp:', tooltip_value);
 </script>
 
-<!-- {#key tooltip_value} -->
-<button use:popup={powerTooltipSettings} style="color: {colour}">
-    <div class="{icon} text-2xl" />
-</button>
-<div
-    class="text-xs text-center card variant-filled-primary p-2 whitespace-nowrap shadow-xl"
-    data-popup="powerPopup"
->
-    {tooltip_value}
-    <div class="arrow variant-filled-primary" />
-</div>
-<!-- {/key} -->
+{#key tooltip_value}
+    <button use:popup={powerTooltipSettings} style="color: {colour}">
+        <div class="{icon} text-2xl" />
+    </button>
+    <div
+        class="text-xs text-center card variant-filled-primary p-2 whitespace-nowrap shadow-xl"
+        data-popup={target}
+    >
+        {tooltip_value}
+        <div class="arrow variant-filled-primary" />
+    </div>
+    <!-- <pre>{JSON.stringify(tooltip_value, null, 2)}</pre> -->
+{/key}
