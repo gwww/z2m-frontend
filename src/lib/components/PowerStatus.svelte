@@ -48,7 +48,6 @@
         tooltip_value = 'Powered';
         icon = 'i-mdi-power';
     }
-    $: console.log('powerComp:', tooltip_value);
 </script>
 
 {#key tooltip_value}
