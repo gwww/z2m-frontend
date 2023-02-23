@@ -52,7 +52,7 @@
 
 {#if device && device_model}
     <div class="card p-4 space-y-8">
-        <div class="flex flex-wrap gap-4 justify-center items-center flex-col sm:flex-row">
+        <div class="flex flex-wrap gap-4 justify-center flex-col sm:flex-row">
             <DeviceImage image={device_model.definition.model || ''} />
 
             <div class="w-full md:w-3/5 lg:w-2/5">

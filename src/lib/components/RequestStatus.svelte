@@ -10,6 +10,7 @@
     };
 </script>
 
+<!-- <br /> -->
 <div class="message">
     {#if promise && show}
         {#await promise}
@@ -33,9 +34,12 @@
         height: 24px;
         width: 100%;
         position: relative;
+        display: inline-block;
         z-index: 10;
     }
     .message div {
         position: absolute;
+        margin: 0;
+        padding: 0;
     }
 </style>
