@@ -3,7 +3,6 @@
 
     export let promise: Promise<string> | undefined;
     export let show = true;
-    $: console.log(promise, show);
 
     const doneCallback = () => {
         promise = undefined;
