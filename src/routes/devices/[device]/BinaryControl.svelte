@@ -1,11 +1,12 @@
 <script lang="ts">
     import type { DeviceState, ExposedBinary } from '$lib/types';
     import { getContext } from 'svelte';
+    import type { Writable } from 'svelte/store';
     import * as MQTT from '$lib/mqtt';
     import { SlideToggle } from '@skeletonlabs/skeleton';
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 
-    let state: SvelteStore<DeviceState>;
+    let state: Writable<DeviceState>;
     let value: boolean;
     let feature: ExposedBinary;
     let promise: Promise<string> | undefined = undefined;

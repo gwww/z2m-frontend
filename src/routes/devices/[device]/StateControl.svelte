@@ -4,11 +4,12 @@
     import * as timeago from 'timeago.js';
     import { getContext } from 'svelte';
     import type { DeviceState } from '$lib/types';
+    import type { Writable } from 'svelte/store';
 
     export let id: string;
 
     $: device = $devices.find((d) => d.ieee_address === id);
-    $: state = getContext('state') as SvelteStore<DeviceState>;
+    $: state = getContext('state') as Writable<DeviceState>;
 
     $: availability_configured = $devices.some((d) => d.availability !== undefined);
     $: online_html = 'Not available';
