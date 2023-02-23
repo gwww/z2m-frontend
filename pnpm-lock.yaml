@@ -1,9 +1,10 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@floating-ui/dom': ^1.2.1
   '@iconify-json/mdi': ^1.1.46
   '@playwright/test': ^1.30.0
-  '@skeletonlabs/skeleton': ^0.124.2
+  '@skeletonlabs/skeleton': ^0.132.5
   '@sveltejs/adapter-auto': ^2.0.0
   '@sveltejs/kit': ^1.5.5
   '@tailwindcss/forms': ^0.5.3
@@ -32,7 +33,8 @@ specifiers:
   vitest: ^0.28.4
 
 dependencies:
-  '@skeletonlabs/skeleton': 0.124.2
+  '@floating-ui/dom': 1.2.1
+  '@skeletonlabs/skeleton': 0.132.5
   timeago.js: 4.0.2
 
 devDependencies:
@@ -304,6 +306,16 @@ packages:
       - supports-color
     dev: true
 
+  /@floating-ui/core/1.2.1:
+    resolution: {integrity: sha512-LSqwPZkK3rYfD7GKoIeExXOyYx6Q1O4iqZWwIehDNuv3Dv425FIAE8PRwtAx1imEolFTHgBEcoFHm9MDnYgPCg==}
+    dev: false
+
+  /@floating-ui/dom/1.2.1:
+    resolution: {integrity: sha512-Rt45SmRiV8eU+xXSB9t0uMYiQ/ZWGE/jumse2o3i5RGlyvcbqOF4q+1qBnzLE2kZ5JGhq0iMkcGXUKbFe7MpTA==}
+    dependencies:
+      '@floating-ui/core': 1.2.1
+    dev: false
+
   /@humanwhocodes/config-array/0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}
     engines: {node: '>=10.10.0'}
@@ -424,8 +436,8 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /@skeletonlabs/skeleton/0.124.2:
-    resolution: {integrity: sha512-SQ0tgXXEj/QJ5BSA+UwKdSMADW5Xt+5iNpks1y94YnX2iwAY80MlffEfip+//VXYayeGvzx4xiU4//MpK9+Zgg==}
+  /@skeletonlabs/skeleton/0.132.5:
+    resolution: {integrity: sha512-xbw/2hWw7/BjIYjEw9fDNG/to9/nML6Lc7m/PPSHG7cP6+pQ5CwvNxAXhErCkIGICuAKXiesYglhw2PrZY6M2A==}
     dependencies:
       svelte: 3.55.1
     dev: false

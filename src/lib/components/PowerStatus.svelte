@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { PowerSource } from '$lib/types';
-    import { tooltip } from '@skeletonlabs/skeleton';
+    import type { PopupSettings } from '@skeletonlabs/skeleton';
+    import { popup } from '@skeletonlabs/skeleton';
 
     const batteries = [
         ['i-mdi-battery-outline', 'red'],
@@ -18,6 +19,12 @@
 
     export let powerSource: PowerSource;
     export let powerLevel: number;
+
+    let powerTooltipSettings: PopupSettings = {
+        event: 'hover',
+        target: 'powerPopup',
+        placement: 'top',
+    };
 
     let icon: string;
     let colour = 'darkgray';
@@ -39,10 +46,18 @@
         tooltip_value = 'Powered';
         icon = 'i-mdi-power';
     }
+    $: console.log('powerComp:', tooltip_value);
 </script>
 
-{#key tooltip_value}
-    <button use:tooltip={{ content: tooltip_value, position: 'top' }} style="color: {colour}">
-        <div class="{icon} text-2xl" />
-    </button>
-{/key}
+<!-- {#key tooltip_value} -->
+<button use:popup={powerTooltipSettings} style="color: {colour}">
+    <div class="{icon} text-2xl" />
+</button>
+<div
+    class="text-xs text-center card variant-filled-primary p-2 whitespace-nowrap shadow-xl"
+    data-popup="powerPopup"
+>
+    {tooltip_value}
+    <div class="arrow variant-filled-primary" />
+</div>
+<!-- {/key} -->
