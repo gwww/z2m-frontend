@@ -3,8 +3,10 @@
     import BuildState from './BuildState.svelte';
     import * as timeago from 'timeago.js';
     import { getContext } from 'svelte';
-    import type { DeviceState } from '$lib/types';
+    import type { DeviceState, ExposedItemBase, Exposes } from '$lib/types';
+    import { AccessType } from '$lib/types';
     import type { Writable } from 'svelte/store';
+    import * as Case from '$lib/utils/case';
 
     export let id: string;
 
@@ -26,10 +28,22 @@
         $bridge_info.config.advanced.last_seen !== 'disable';
     $: last_seen = 'Not available';
     $: if ($state?.last_seen) {
-        last_seen = timeago.format($state.last_seen);
+        last_seen = timeago.format($state.last_seen as Date);
     }
 
-    $: exposes = { type: '_root_', features: device?.device?.definition.exposes };
+    let exposed_list: ExposedItemBase[];
+    $: exposed_list = (device?.device?.definition.exposes || []) as ExposedItemBase[];
+
+    $: exposes = { type: '_root_', features: device?.device?.definition.exposes || [] };
+
+    const get_readonly_property = (feature: Exposes) => {
+        const access = (feature as ExposedItemBase).access;
+        if (!access) return;
+        if (access & AccessType.ACCESS_WRITE) return;
+        if (!feature.property) return;
+        if (!$state.hasOwnProperty(feature.property)) return;
+        return $state[feature.property] || '---';
+    };
 </script>
 
 <div class="flex justify-evenly mt-4 mb-8">
@@ -43,11 +57,12 @@
             Last seen: {@html last_seen}
         </div>
     {/if}
-    {#if state}
-        <div>
-            Link Quality: {$state?.linkquality}
-        </div>
-    {/if}
+    {#each exposed_list || [] as feature}
+        {@const value = get_readonly_property(feature)}
+        {#if value}
+            <div>{Case.any2Title(feature.name)}: {value}</div>
+        {/if}
+    {/each}
 </div>
 
 <BuildState {...exposes} />

@@ -15,7 +15,7 @@
     $: {
         feature = $$props as ExposedBinary;
         state = getContext('state');
-        value = $state?.state === feature.value_on;
+        value = $state[feature.property] === feature.value_on;
     }
 
     const changed = () => {
@@ -33,4 +33,4 @@
     on:change={changed}
 />
 
-<RequestStatus {promise} show={promise !== undefined} />
+<RequestStatus {promise} />

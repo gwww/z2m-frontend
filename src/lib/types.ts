@@ -13,12 +13,13 @@ export type GenericObject = Record<string, unknown>;
 
 export type PowerSource = 'Battery' | 'DC Source' | 'Mains (single phase)';
 
-export interface DeviceState {
-    state: string;
-    last_seen?: string;
-    battery?: number;
-    linkquality: number;
-}
+// export interface DeviceState {
+//     state: string;
+//     last_seen?: string;
+//     battery?: number;
+//     linkquality: number;
+// }
+export type DeviceState = GenericObject;
 
 export enum AccessType {
     ACCESS_PUBLISHED = 0b001,
