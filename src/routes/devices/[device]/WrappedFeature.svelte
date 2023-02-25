@@ -1,6 +1,7 @@
 <script lang="ts">
     import * as Case from '$lib/utils/case';
-    import BinaryControl from './BinaryControl.svelte';
+    import BinaryFeature from './BinaryFeature.svelte';
+    import NumericFeature from './NumericFeature.svelte';
     // import type { PopupSettings } from '@skeletonlabs/skeleton';
     // import { popup } from '@skeletonlabs/skeleton';
     // import generateId from '$lib/utils/generateId';
@@ -34,6 +35,11 @@
     <div class="text-xs pb-2">{feature.description}</div>
 
     {#if feature.type === 'binary'}
-        <BinaryControl {...feature} />
+        <BinaryFeature {...feature} />
+    {:else if feature.type === 'numeric'}
+        <NumericFeature {...feature} />
+    {:else if feature.type === '_html_'}
+        {@html feature.value}
     {/if}
+    <!-- <pre>{JSON.stringify(feature)}</pre> -->
 </div>

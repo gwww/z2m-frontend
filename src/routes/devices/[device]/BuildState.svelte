@@ -2,7 +2,8 @@
     import { EXPOSED_FEATURE_TYPE } from '$lib/types';
     import type { Exposes } from '$lib/types';
     import * as Case from '$lib/utils/case';
-    import WrappedControl from './WrappedControl.svelte';
+    import StateSection from './StateSection.svelte';
+    import WrappedFeature from './WrappedFeature.svelte';
 
     export let type = '';
     export let features: Exposes[] = [];
@@ -13,23 +14,16 @@
 
     const getCompositeTitle = (_type: string, name: string) => {
         if (_type === 'composite') return Case.any2Title(name);
-        return `${Case.any2Title(_type)} Device`;
+        return `${Case.any2Title(_type)} Controls`;
     };
 </script>
 
 {#if isComposite(type)}
-    {@const title = getCompositeTitle(type, $$restProps.name)}
-    <div class="p-4 mt-4 col-span-full">
-        {#if title}
-            <p class="p-1 !text-xl">{title}</p>
-            <hr />
-        {/if}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
-            {#each features as feature}
-                <svelte:self {...feature} />
-            {/each}
-        </div>
-    </div>
+    <StateSection title={getCompositeTitle(type, $$restProps.name)}>
+        {#each features as feature}
+            <svelte:self {...feature} />
+        {/each}
+    </StateSection>
 {:else if type === '_root_'}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {#each features as feature}
@@ -37,5 +31,5 @@
         {/each}
     </div>
 {:else if !$$restProps.access || $$restProps.access === 7}
-    <WrappedControl {...$$props} />
+    <WrappedFeature {...$$props} />
 {/if}

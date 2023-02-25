@@ -9,7 +9,6 @@
     };
 </script>
 
-<!-- <br /> -->
 <div class="message">
     {#if promise && show}
         {#await promise}

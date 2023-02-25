@@ -9,7 +9,7 @@
     import type { SaveResult } from '$components/InlineEdit.svelte';
     import Attributes from './Attributes.svelte';
     import DeviceImage from './DeviceImage.svelte';
-    import StateControl from './StateControl.svelte';
+    import StatePanel from './StatePanel.svelte';
     import type {
         ConfigInfoDevice,
         ConsolidatedDevice,
@@ -82,7 +82,7 @@
             <!-- Tabs -->
             <Tab bind:group={currentTab} name="state" value={0}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-book" /></svelte:fragment>
-                State/Control
+                State
             </Tab>
             <Tab bind:group={currentTab} name="attributes" value={1}>
                 <svelte:fragment slot="lead"><i class="fa-solid fa-film" /></svelte:fragment>
@@ -98,7 +98,7 @@
             </Tab>
             <svelte:fragment slot="panel">
                 {#if currentTab === 0}
-                    <StateControl id={key} />
+                    <StatePanel id={key} />
                 {:else if currentTab === 1}
                     <Attributes id={key} />
                 {:else if currentTab === 2}

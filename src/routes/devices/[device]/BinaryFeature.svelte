@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { DeviceState, ExposedBinary } from '$lib/types';
+    import { AccessType, type DeviceState, type ExposedBinary } from '$lib/types';
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
     import * as MQTT from '$lib/mqtt';
@@ -25,12 +25,15 @@
     };
 </script>
 
-<SlideToggle
-    name="slider"
-    size="sm"
-    active="bg-primary-500"
-    bind:checked={value}
-    on:change={changed}
-/>
-
-<RequestStatus {promise} />
+{#if feature.access & AccessType.ACCESS_WRITE}
+    <SlideToggle
+        name="slider"
+        size="sm"
+        active="bg-primary-500"
+        bind:checked={value}
+        on:change={changed}
+    />
+    <RequestStatus {promise} />
+{:else}
+    {value}
+{/if}

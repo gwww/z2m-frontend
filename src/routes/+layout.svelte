@@ -31,10 +31,6 @@
 
     <!-- Page Route Content -->
     <div class="pt-8 px-4 lg:px-32">
-        <!-- <div class="grid grid-cols-12 gap-8"> -->
-        <!-- <div class="col-start-2 col-span-10 ..."> -->
         <slot />
-        <!-- </div> -->
-        <!-- </div> -->
     </div>
 </AppShell>

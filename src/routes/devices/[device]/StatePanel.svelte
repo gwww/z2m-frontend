@@ -1,6 +1,8 @@
 <script lang="ts">
     import { devices, bridge_info } from '$lib/mqtt';
     import BuildState from './BuildState.svelte';
+    import StateSection from './StateSection.svelte';
+    import WrappedControl from './WrappedControl.svelte';
     import * as timeago from 'timeago.js';
     import { getContext } from 'svelte';
     import type { DeviceState, ExposedItemBase, Exposes } from '$lib/types';
@@ -42,28 +44,38 @@
         if (access & AccessType.ACCESS_WRITE) return;
         if (!feature.property) return;
         if (!$state.hasOwnProperty(feature.property)) return;
-        return $state[feature.property] || '---';
+        return $state[feature.property] || 'n/a';
     };
 </script>
 
-<div class="flex justify-evenly mt-4 mb-8">
+<StateSection title="Status">
     {#if availability_configured}
-        <div>
-            Availability: {@html online_html}
-        </div>
+        {@const s = {
+            type: '_html_',
+            name: 'Availability',
+            description: 'Is device online or offline',
+            value: online_html,
+        }}
+        <WrappedControl {...s} />
     {/if}
+
     {#if last_seen_configured}
-        <div>
-            Last seen: {@html last_seen}
-        </div>
+        {@const s = {
+            type: '_html_',
+            name: 'last_seen',
+            description: 'How long ago a message was received from the device',
+            value: last_seen,
+        }}
+        <WrappedControl {...s} />
     {/if}
+
     {#each exposed_list || [] as feature}
         {@const value = get_readonly_property(feature)}
         {#if value}
-            <div>{Case.any2Title(feature.name)}: {value}</div>
+            <WrappedControl {...feature} />
         {/if}
     {/each}
-</div>
+</StateSection>
 
 <BuildState {...exposes} />
 
