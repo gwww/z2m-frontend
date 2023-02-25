@@ -8,7 +8,6 @@
     import type { DeviceState, ExposedItemBase, Exposes } from '$lib/types';
     import { AccessType } from '$lib/types';
     import type { Writable } from 'svelte/store';
-    import * as Case from '$lib/utils/case';
 
     export let id: string;
 
