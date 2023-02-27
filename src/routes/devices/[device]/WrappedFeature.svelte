@@ -6,7 +6,8 @@
     // import { popup } from '@skeletonlabs/skeleton';
     // import generateId from '$lib/utils/generateId';
 
-    export let { ...feature } = $$props;
+    // export let { ...feature } = $$props;
+    $: feature = $$props;
 
     // const target = generateId();
     // let infoPopupSettings: PopupSettings = {
@@ -16,7 +17,7 @@
     // };
 </script>
 
-<div class={'p-4'}>
+<div class={'px-4 pt-4'}>
     <div class="font-bold text-primary-500 text-lg pb-1">
         {Case.any2Title(feature.name)}
         <!-- <button -->

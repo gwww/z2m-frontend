@@ -2,7 +2,7 @@
     export let title = '';
 </script>
 
-<div class="px-4 mt-4 col-span-full">
+<div class="px-4 pt-8 col-span-full">
     {#if title}
         <p class="p-1 !text-xl">{title}</p>
         <hr />

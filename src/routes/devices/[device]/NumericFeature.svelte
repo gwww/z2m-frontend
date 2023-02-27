@@ -5,11 +5,15 @@
 
     let state: Writable<DeviceState>;
     let feature: ExposedBinary;
+    let value: number;
 
     $: {
         feature = $$props as ExposedBinary;
         state = getContext('state');
+        if ($state && typeof $state[feature.property] == 'number') {
+            value = $state[feature.property] as number;
+        }
     }
 </script>
 
-<p>{$state[feature.property] || 'n/a'} {feature.unit || ''}</p>
+<p>{value || 'n/a'} {feature.unit || ''}</p>

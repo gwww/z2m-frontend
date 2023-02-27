@@ -15,7 +15,7 @@
     $: {
         feature = $$props as ExposedBinary;
         state = getContext('state');
-        value = $state[feature.property] === feature.value_on;
+        value = $state && $state[feature.property] === feature.value_on;
     }
 
     const changed = () => {

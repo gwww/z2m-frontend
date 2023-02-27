@@ -2,11 +2,11 @@
     import { devices, bridge_info } from '$lib/mqtt';
     import BuildState from './BuildState.svelte';
     import StateSection from './StateSection.svelte';
-    import WrappedControl from './WrappedControl.svelte';
+    import WrappedFeature from './WrappedFeature.svelte';
     import * as timeago from 'timeago.js';
     import { getContext } from 'svelte';
     import type { DeviceState, ExposedItemBase, Exposes } from '$lib/types';
-    import { AccessType } from '$lib/types';
+    import { AccessType, EXPOSED_FEATURE_TYPE } from '$lib/types';
     import type { Writable } from 'svelte/store';
 
     export let id: string;
@@ -37,11 +37,24 @@
 
     $: exposes = { type: '_root_', features: device?.device?.definition.exposes || [] };
 
+    const isComposite = (_type: string): boolean => {
+        return (EXPOSED_FEATURE_TYPE as ReadonlyArray<string>).includes(_type);
+    };
+
+    const is_writable_property = (feature: Exposes) => {
+        if (isComposite(feature.type)) return false;
+        const access = (feature as ExposedItemBase).access;
+        if (!access) return true;
+        if (access & AccessType.ACCESS_WRITE) return true;
+        return false;
+    };
+
     const get_readonly_property = (feature: Exposes) => {
         const access = (feature as ExposedItemBase).access;
         if (!access) return;
         if (access & AccessType.ACCESS_WRITE) return;
         if (!feature.property) return;
+        if (!$state) return;
         if (!$state.hasOwnProperty(feature.property)) return;
         return $state[feature.property] || 'n/a';
     };
@@ -49,33 +62,39 @@
 
 <StateSection title="Status">
     {#if availability_configured}
-        {@const s = {
-            type: '_html_',
-            name: 'Availability',
-            description: 'Is device online or offline',
-            value: online_html,
-        }}
-        <WrappedControl {...s} />
+        <WrappedFeature
+            type="_html_"
+            description="Device online/offline status"
+            name="Availability"
+            value={online_html}
+        />
     {/if}
 
     {#if last_seen_configured}
-        {@const s = {
-            type: '_html_',
-            name: 'last_seen',
-            description: 'How long ago a message was received from the device',
-            value: last_seen,
-        }}
-        <WrappedControl {...s} />
+        <WrappedFeature
+            type="_html_"
+            name="last_seen"
+            description="How long ago a message was received from the device"
+            value={last_seen}
+        />
     {/if}
 
     {#each exposed_list || [] as feature}
         {@const value = get_readonly_property(feature)}
         {#if value}
-            <WrappedControl {...feature} />
+            <WrappedFeature {...feature} />
         {/if}
     {/each}
 </StateSection>
 
 <BuildState {...exposes} />
+
+<StateSection title="Properties">
+    {#each exposed_list || [] as feature}
+        {#if is_writable_property(feature)}
+            <WrappedFeature {...feature} />
+        {/if}
+    {/each}
+</StateSection>
 
 <hr class="mt-4" />
