@@ -68,7 +68,7 @@
                     class="input text-sm"
                     type="text"
                     placeholder="Description..."
-                    value={device.description}
+                    value={device.description || ''}
                     saveCallback={updateDescription}
                 />
             </div>
