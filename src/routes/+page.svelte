@@ -42,7 +42,7 @@
                 }
                 if (seen) {
                     if (device?.state?.last_seen) {
-                        html += timeago.format(device.state.last_seen);
+                        html += timeago.format(device.state.last_seen as Date);
                     } else {
                         html += 'N/A';
                     }
