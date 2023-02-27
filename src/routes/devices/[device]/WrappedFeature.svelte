@@ -33,7 +33,9 @@
         <!--     <div class="arrow variant-filled-secondary" /> -->
         <!-- </div> -->
     </div>
-    <div class="text-xs pb-2">{feature.description}</div>
+    {#if feature.description}
+        <div class="text-xs pb-2">{feature.description}</div>
+    {/if}
 
     {#if feature.type === 'binary'}
         <BinaryFeature {...feature} />

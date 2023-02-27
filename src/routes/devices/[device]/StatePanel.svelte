@@ -1,13 +1,13 @@
 <script lang="ts">
     import { devices, bridge_info } from '$lib/mqtt';
-    import BuildState from './BuildState.svelte';
     import StateSection from './StateSection.svelte';
     import WrappedFeature from './WrappedFeature.svelte';
     import * as timeago from 'timeago.js';
     import { getContext } from 'svelte';
-    import type { DeviceState, ExposedItemBase, Exposes } from '$lib/types';
+    import type { DeviceState, ExposedFeature, ExposedItemBase } from '$lib/types';
     import { AccessType, EXPOSED_FEATURE_TYPE } from '$lib/types';
     import type { Writable } from 'svelte/store';
+    import * as Case from '$lib/utils/case';
 
     export let id: string;
 
@@ -32,69 +32,70 @@
         last_seen = timeago.format($state.last_seen as Date);
     }
 
-    let exposed_list: ExposedItemBase[];
-    $: exposed_list = (device?.device?.definition.exposes || []) as ExposedItemBase[];
+    $: exposed = device?.device?.definition.exposes || [];
+    let exposed_status: ExposedItemBase[];
+    let exposed_properties: ExposedItemBase[];
+    let exposed_composite: ExposedFeature[];
+    $: {
+        exposed_status = [];
+        exposed_composite = [];
+        exposed_properties = [];
+        exposed.forEach((feature) => {
+            if (isComposite(feature.type)) {
+                exposed_composite.push(feature as ExposedFeature);
+            } else if (isReadOnly(feature as ExposedItemBase)) {
+                exposed_status.push(feature as ExposedItemBase);
+            } else {
+                exposed_properties.push(feature as ExposedItemBase);
+            }
+        });
+        exposed_composite = exposed_composite;
+        exposed_properties = exposed_properties;
+        exposed_status = exposed_status;
+    }
 
-    $: exposes = { type: '_root_', features: device?.device?.definition.exposes || [] };
+    const isReadOnly = (feature: ExposedItemBase): boolean => {
+        return (feature.access & AccessType.ACCESS_WRITE) === 0;
+    };
 
     const isComposite = (_type: string): boolean => {
         return (EXPOSED_FEATURE_TYPE as ReadonlyArray<string>).includes(_type);
     };
 
-    const is_writable_property = (feature: Exposes) => {
-        if (isComposite(feature.type)) return false;
-        const access = (feature as ExposedItemBase).access;
-        if (!access) return true;
-        if (access & AccessType.ACCESS_WRITE) return true;
-        return false;
-    };
-
-    const get_readonly_property = (feature: Exposes) => {
-        const access = (feature as ExposedItemBase).access;
-        if (!access) return;
-        if (access & AccessType.ACCESS_WRITE) return;
-        if (!feature.property) return;
-        if (!$state) return;
-        if (!$state.hasOwnProperty(feature.property)) return;
-        return $state[feature.property] || 'n/a';
+    const getCompositeTitle = (_type: string, name: string) => {
+        if (_type === 'composite') return Case.any2Title(name);
+        return `${Case.any2Title(_type)} Controls`;
     };
 </script>
 
 <StateSection title="Status">
     {#if availability_configured}
-        <WrappedFeature
-            type="_html_"
-            description="Device online/offline status"
-            name="Availability"
-            value={online_html}
-        />
+        <WrappedFeature type="_html_" name="Availability" value={online_html} />
     {/if}
 
     {#if last_seen_configured}
-        <WrappedFeature
-            type="_html_"
-            name="last_seen"
-            description="How long ago a message was received from the device"
-            value={last_seen}
-        />
+        <WrappedFeature type="_html_" name="last_seen" value={last_seen} />
     {/if}
 
-    {#each exposed_list || [] as feature}
-        {@const value = get_readonly_property(feature)}
-        {#if value}
-            <WrappedFeature {...feature} />
-        {/if}
+    {#each exposed_status as feature}
+        <WrappedFeature {...feature} />
     {/each}
 </StateSection>
 
-<BuildState {...exposes} />
-
-<StateSection title="Properties">
-    {#each exposed_list || [] as feature}
-        {#if is_writable_property(feature)}
+{#each exposed_composite as composite}
+    <StateSection title={getCompositeTitle(composite.type, composite.name || '')}>
+        {#each composite.features as feature}
             <WrappedFeature {...feature} />
-        {/if}
-    {/each}
-</StateSection>
+        {/each}
+    </StateSection>
+{/each}
+
+{#if exposed_properties.length}
+    <StateSection title="Properties">
+        {#each exposed_properties as feature}
+            <WrappedFeature {...feature} />
+        {/each}
+    </StateSection>
+{/if}
 
 <hr class="mt-4" />
