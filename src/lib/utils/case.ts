@@ -17,8 +17,12 @@ const exceptions: Dictionary<string> = {
     linkquality: 'Link Quality',
 };
 
+// Simple replace on words to give better looking titles
+// If the list of substitutions grows then may need to have a better algorithm
 const processModifications = (str: string): string => {
-    return str.replaceAll(/\bled\b/gi, 'LED');
+    return str
+        .replaceAll(/\bled\b/gi, 'LED')
+        .replaceAll(/\btemp\b/gi, 'Temperature')
 };
 
 export const any2Title = (str: string): string => {
