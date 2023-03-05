@@ -1,19 +1,29 @@
 <script lang="ts">
-    import type { DeviceState, ExposedBinary } from '$lib/types';
+    import { AccessType, type DeviceState, type ExposedNumeric } from '$lib/types';
+    import { RangeSlider } from '@skeletonlabs/skeleton';
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
+    import generateId from '$lib/utils/generateId';
 
-    let state: Writable<DeviceState>;
-    let feature: ExposedBinary;
-    let value: number;
+    let state: Writable<DeviceState> = getContext('state');
+    const id = generateId();
+    const feature = $$props as ExposedNumeric;
 
-    $: {
-        feature = $$props as ExposedBinary;
-        state = getContext('state');
-        if ($state && typeof $state[feature.property] == 'number') {
-            value = $state[feature.property] as number;
-        }
-    }
+    $: property = $state ? ($state[feature.property] as number) || 0 : 0;
+    $: value = property;
 </script>
 
-<p>{value || 'n/a'} {feature.unit || ''}</p>
+{#if feature.access & AccessType.ACCESS_WRITE}
+    <RangeSlider
+        name={id}
+        accent="!accent-primary-500"
+        bind:value
+        min={feature.value_min || 0}
+        max={feature.value_max || 0}
+    />
+    <div class="flex justify-between items-center">
+        <div class="text-xs">{value} / {feature.value_max || 0}</div>
+    </div>
+{:else}
+    <p>{value || 'n/a'} {feature.unit || ''}</p>
+{/if}

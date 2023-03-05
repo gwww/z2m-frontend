@@ -56,8 +56,8 @@ export interface NumericPreset {
 
 export interface ExposedNumeric extends ExposedItemBase {
     type: 'numeric';
-    value_min?: string;
-    value_max?: string;
+    value_min?: number;
+    value_max?: number;
     presets: NumericPreset[];
 }
 
