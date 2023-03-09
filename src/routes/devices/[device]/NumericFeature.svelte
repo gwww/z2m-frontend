@@ -17,7 +17,6 @@
     $: value = property;
 
     const numberChanged = () => {
-        console.log('number changed', value);
         promise = MQTT.set(id, { [feature.property]: `${value}` });
     };
 </script>
