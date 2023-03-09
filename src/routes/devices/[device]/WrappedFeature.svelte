@@ -18,7 +18,7 @@
 </script>
 
 <div class={'px-4 pt-4'}>
-    <div class="font-bold text-primary-500 text-lg pb-1">
+    <div class="text-primary-500 text-lg pb-1">
         {Case.any2Title(feature.name)}
         <!-- <button -->
         <!--     use:popup={infoPopupSettings} -->
