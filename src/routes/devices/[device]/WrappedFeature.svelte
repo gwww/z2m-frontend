@@ -1,48 +1,31 @@
 <script lang="ts">
     import * as Case from '$lib/utils/case';
     import BinaryFeature from './BinaryFeature.svelte';
+    import EnumFeature from './EnumFeature.svelte';
     import NumericFeature from './NumericFeature.svelte';
-    // import type { PopupSettings } from '@skeletonlabs/skeleton';
-    // import { popup } from '@skeletonlabs/skeleton';
-    // import generateId from '$lib/utils/generateId';
+    import type { ComponentType } from 'svelte';
+    import type { Dictionary } from '$lib/types';
 
-    // export let { ...feature } = $$props;
+    const feature_types: Dictionary<ComponentType> = {
+        binary: BinaryFeature,
+        enum: EnumFeature,
+        numeric: NumericFeature,
+    };
+
     $: feature = $$props;
-
-    // const target = generateId();
-    // let infoPopupSettings: PopupSettings = {
-    //     event: 'click',
-    //     target: target,
-    //     placement: 'top',
-    // };
 </script>
 
 <div class={'px-4 pt-4'}>
     <div class="text-primary-500 text-lg pb-1">
         {Case.any2Title(feature.name)}
-        <!-- <button -->
-        <!--     use:popup={infoPopupSettings} -->
-        <!--     class="bg-surface-400 mb-2 rounded-full i-mdi-information" -->
-        <!--     type="button" -->
-        <!-- /> -->
-        <!-- <div class="card variant-filled-secondary p-4 w-96 shadow-xl" data-popup={target}> -->
-        <!--     <div class="space-y-4"> -->
-        <!--         <p class="!text-sm font-normal">{feature.description}</p> -->
-        <!--         <button class="btn-sm float-right variant-filled">Close</button> -->
-        <!--     </div> -->
-        <!--     <div class="arrow variant-filled-secondary" /> -->
-        <!-- </div> -->
     </div>
     {#if feature.description}
         <div class="text-xs pb-2">{feature.description}</div>
     {/if}
 
-    {#if feature.type === 'binary'}
-        <BinaryFeature {...feature} />
-    {:else if feature.type === 'numeric'}
-        <NumericFeature {...feature} />
+    {#if feature_types[feature.type]}
+        <svelte:component this={feature_types[feature.type]} {...feature} />
     {:else if feature.type === '_html_'}
         {@html feature.value}
     {/if}
-    <!-- <pre>{JSON.stringify(feature)}</pre> -->
 </div>
