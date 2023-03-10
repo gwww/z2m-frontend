@@ -1,11 +1,12 @@
 <script lang="ts">
-    import type { DeviceState, ExposedEnum } from '$lib/types';
+    import { AccessType, type DeviceState, type ExposedEnum } from '$lib/types';
     import { RadioItem, RadioGroup } from '@skeletonlabs/skeleton';
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
     import generateId from '$lib/utils/generateId';
     import * as MQTT from '$lib/mqtt';
     import * as Case from '$lib/utils/case';
+    import { isWritable } from '$lib/utils/feature';
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 
     let state: Writable<DeviceState> = getContext('state');
@@ -23,13 +24,9 @@
     };
 </script>
 
-{#if feature.values.length > 7}
-    <select class="select text-sm max-w-[200px]" bind:value on:change={enumChanged}>
-        {#each feature.values as item}
-            <option value={item}>{Case.any2Title(item)}</option>
-        {/each}
-    </select>
-{:else}
+{#if !isWritable(feature)}
+    <p>{value || 'n/a'} {feature.unit || ''}</p>
+{:else if feature.values.length <= 7}
     <RadioGroup
         active="variant-filled-primary"
         hover="hover:variant-soft-primary"
@@ -41,5 +38,11 @@
             >
         {/each}
     </RadioGroup>
+{:else}
+    <select class="select text-sm max-w-[200px]" bind:value on:change={enumChanged}>
+        {#each feature.values as item}
+            <option value={item}>{Case.any2Title(item)}</option>
+        {/each}
+    </select>
 {/if}
 <RequestStatus {promise} />

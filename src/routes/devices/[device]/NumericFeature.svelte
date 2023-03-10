@@ -4,6 +4,7 @@
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
     import generateId from '$lib/utils/generateId';
+    import { isWritable } from '$lib/utils/feature';
     import * as MQTT from '$lib/mqtt';
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 
@@ -21,7 +22,7 @@
     };
 </script>
 
-{#if feature.access & AccessType.ACCESS_WRITE}
+{#if isWritable(feature)}
     <div class="flex w-full">
         <div class="w-full pr-4">
             <RangeSlider

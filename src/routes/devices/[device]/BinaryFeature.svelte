@@ -3,6 +3,7 @@
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
     import * as MQTT from '$lib/mqtt';
+    import { isWritable } from '$lib/utils/feature';
     import { SlideToggle } from '@skeletonlabs/skeleton';
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 
@@ -25,7 +26,7 @@
     };
 </script>
 
-{#if feature.access & AccessType.ACCESS_WRITE}
+{#if isWritable(feature)}
     <SlideToggle
         name="slider"
         size="sm"

@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as Case from './case';
+import * as Feature from './feature'
+import type { ExposedItemBase } from '$lib/types';
 
 describe('Camel case', () => {
     it('Simple test', () => {
@@ -52,5 +54,17 @@ describe('Exceptions', () => {
     });
     it('Change LED at end', () => {
         expect(Case.any2Title('testLed')).toBe('Test LED');
+    });
+});
+
+describe('Feature utils', () => {
+    it('when no access specified return writable', () => {
+        expect(Feature.isWritable({} as ExposedItemBase)).toBe(true);
+    });
+    it('is writable should return true', () => {
+        expect(Feature.isWritable({ access: 7 } as unknown as ExposedItemBase)).toBe(true);
+    });
+    it('is not writable should return false', () => {
+        expect(Feature.isWritable({ access: 1 } as unknown as ExposedItemBase)).toBe(false);
     });
 });
