@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { AccessType, type DeviceState, type ExposedEnum } from '$lib/types';
+    import type { DeviceState, ExposedEnum } from '$lib/types';
     import { RadioItem, RadioGroup } from '@skeletonlabs/skeleton';
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
