@@ -45,7 +45,7 @@
     "type": "module",
     "dependencies": {
         "@floating-ui/dom": "^1.2.3",
-        "@skeletonlabs/skeleton": "^0.132.5",
+        "@skeletonlabs/skeleton": "^1.0.0",
         "timeago.js": "^4.0.2"
     }
 }
