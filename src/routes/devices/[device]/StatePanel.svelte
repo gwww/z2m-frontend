@@ -15,12 +15,12 @@
     $: state = getContext('state') as Writable<DeviceState>;
 
     $: availability_configured = $devices.some((d) => d.availability !== undefined);
-    $: online_html = 'Not available';
+    $: online_status = 'Not available';
     $: if (device?.availability !== undefined) {
         if (device?.availability) {
-            online_html = '<span class="text-success-600">Online</span>';
+            online_status = '<span class="text-success-600">Online</span>';
         } else {
-            online_html = '<span class="text-error-500">Offline</span>';
+            online_status = '<span class="text-error-500">Offline</span>';
         }
     }
 
@@ -70,7 +70,7 @@
 
 <StateSection title="Status">
     {#if availability_configured}
-        <WrappedFeature type="_html_" name="Availability" value={online_html} />
+        <WrappedFeature type="_html_" name="Availability" value={online_status} />
     {/if}
 
     {#if last_seen_configured}
