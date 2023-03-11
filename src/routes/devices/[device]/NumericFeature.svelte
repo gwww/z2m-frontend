@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { AccessType, type DeviceState, type ExposedNumeric } from '$lib/types';
+    import type { DeviceState, ExposedNumeric } from '$lib/types';
     import { RangeSlider } from '@skeletonlabs/skeleton';
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
