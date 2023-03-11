@@ -5,6 +5,7 @@
     export let columns: Column[];
 
     const sortable = columns.some((col) => col.sort);
+    const sort_order = 'none';
 </script>
 
 {#if { sortable }}
@@ -18,7 +19,9 @@
             {#each columns as column, i}
                 {#if !column.hidden}
                     {#if column.sort}
-                        <th data-sort={i + 1} aria-sort="none" class={classAsc}>{column.name}</th>
+                        <th data-sort={i + 1} aria-sort={sort_order} class={classAsc}
+                            >{column.name}</th
+                        >
                     {:else}
                         <th>{column.name}</th>
                     {/if}
@@ -51,10 +54,10 @@
         visibility: hidden;
         opacity: 50%;
     }
-    .table-asc:global([aria-sort='ascending'])::after {
+    .table-asc[aria-sort='ascending']::after {
         visibility: visible;
     }
-    .table-dsc:global([aria-sort='descending'])::after {
+    .table-dsc[aria-sort='descending']::after {
         visibility: visible;
     }
 </style>
