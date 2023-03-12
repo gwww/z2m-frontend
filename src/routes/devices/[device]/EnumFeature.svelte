@@ -1,12 +1,10 @@
 <script lang="ts">
-    import type { DeviceState, ExposedEnum } from '$lib/types';
-    import { RadioItem, RadioGroup } from '@skeletonlabs/skeleton';
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
-    import generateId from '$lib/utils/generateId';
+    import { RadioItem, RadioGroup } from '@skeletonlabs/skeleton';
+    import type { DeviceState, ExposedEnum } from '$lib/types';
+    import { any2Title, generateId, isWritable } from '$lib/util';
     import * as MQTT from '$lib/mqtt';
-    import * as Case from '$lib/utils/case';
-    import { isWritable } from '$lib/utils/feature';
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 
     const gen_id = generateId();
@@ -33,14 +31,14 @@
     >
         {#each feature.values as item}
             <RadioItem bind:group={value} name={gen_id} value={item} on:change={enumChanged}
-                >{Case.any2Title(item)}</RadioItem
+                >{any2Title(item)}</RadioItem
             >
         {/each}
     </RadioGroup>
 {:else}
     <select class="select text-sm max-w-[200px]" bind:value on:change={enumChanged}>
         {#each feature.values as item}
-            <option value={item}>{Case.any2Title(item)}</option>
+            <option value={item}>{any2Title(item)}</option>
         {/each}
     </select>
 {/if}

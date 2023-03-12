@@ -1,13 +1,13 @@
 <script lang="ts">
+    import { getContext } from 'svelte';
+    import type { Writable } from 'svelte/store';
+    import * as timeago from 'timeago.js';
     import { devices, bridge_info } from '$lib/mqtt';
     import StateSection from './StateSection.svelte';
     import WrappedFeature from './WrappedFeature.svelte';
-    import * as timeago from 'timeago.js';
-    import { getContext } from 'svelte';
     import type { DeviceState, ExposedFeature, ExposedItemBase } from '$lib/types';
     import { AccessType, EXPOSED_FEATURE_TYPE } from '$lib/types';
-    import type { Writable } from 'svelte/store';
-    import * as Case from '$lib/utils/case';
+    import { any2Title } from '$lib/util';
 
     export let id: string;
 
@@ -64,8 +64,8 @@
     };
 
     const getCompositeTitle = (_type: string, name: string) => {
-        if (_type === 'composite') return Case.any2Title(name);
-        return `${Case.any2Title(_type)} Controls`;
+        if (_type === 'composite') return any2Title(name);
+        return `${any2Title(_type)} Controls`;
     };
 </script>
 

@@ -1,10 +1,9 @@
 <script lang="ts">
-    import type { DeviceState, ExposedNumeric } from '$lib/types';
-    import { RangeSlider } from '@skeletonlabs/skeleton';
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
-    import generateId from '$lib/utils/generateId';
-    import { isWritable } from '$lib/utils/feature';
+    import { RangeSlider } from '@skeletonlabs/skeleton';
+    import type { DeviceState, ExposedNumeric } from '$lib/types';
+    import { generateId, isWritable } from '$lib/util';
     import * as MQTT from '$lib/mqtt';
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 

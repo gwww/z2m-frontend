@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type { DeviceState, ExposedBinary } from '$lib/types';
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
-    import * as MQTT from '$lib/mqtt';
-    import { isWritable } from '$lib/utils/feature';
     import { SlideToggle } from '@skeletonlabs/skeleton';
+    import type { DeviceState, ExposedBinary } from '$lib/types';
+    import * as MQTT from '$lib/mqtt';
+    import { isWritable } from '$lib/util';
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 
     let state: Writable<DeviceState> = getContext('state');

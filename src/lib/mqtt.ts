@@ -8,7 +8,7 @@ import type {
     Dictionary,
     GenericObject,
 } from '$lib/types';
-import generateId from '$lib/utils/generateId';
+import { generateId } from '$lib/util'
 
 import { writable, type Writable } from 'svelte/store';
 export const bridge_info: Writable<BridgeInfo | undefined> = writable();

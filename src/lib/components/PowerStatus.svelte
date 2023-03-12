@@ -1,8 +1,8 @@
 <script lang="ts">
-    import type { PowerSource } from '$lib/types';
     import type { PopupSettings } from '@skeletonlabs/skeleton';
     import { popup } from '@skeletonlabs/skeleton';
-    import generateId from '$lib/utils/generateId';
+    import type { PowerSource } from '$lib/types';
+    import { generateId } from '$lib/util';
 
     const batteries = [
         ['i-mdi-battery-outline', 'red'],

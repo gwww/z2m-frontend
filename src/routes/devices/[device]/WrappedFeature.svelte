@@ -1,5 +1,5 @@
 <script lang="ts">
-    import * as Case from '$lib/utils/case';
+    import { any2Title } from '$lib/util';
     import BinaryFeature from './BinaryFeature.svelte';
     import EnumFeature from './EnumFeature.svelte';
     import NumericFeature from './NumericFeature.svelte';
@@ -16,7 +16,7 @@
 
 <div class={'px-4 pt-4'}>
     <div class="text-primary-500 text-lg pb-1">
-        {Case.any2Title(feature.name)}
+        {any2Title(feature.name)}
     </div>
     {#if feature.description}
         <div class="text-xs pb-2">{feature.description}</div>
