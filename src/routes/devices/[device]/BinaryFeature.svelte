@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { AccessType, type DeviceState, type ExposedBinary } from '$lib/types';
+    import type { DeviceState, ExposedBinary } from '$lib/types';
     import { getContext } from 'svelte';
     import type { Writable } from 'svelte/store';
     import * as MQTT from '$lib/mqtt';
@@ -7,7 +7,7 @@
     import { SlideToggle } from '@skeletonlabs/skeleton';
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 
-    let state: Writable<DeviceState>;
+    let state: Writable<DeviceState> = getContext('state');
     let value: boolean;
     let feature: ExposedBinary;
     let promise: Promise<string> | undefined = undefined;
@@ -15,7 +15,6 @@
 
     $: {
         feature = $$props as ExposedBinary;
-        state = getContext('state');
         value = $state && $state[feature.property] === feature.value_on;
     }
 
@@ -36,5 +35,5 @@
     />
     <RequestStatus {promise} />
 {:else}
-    {value}
+    {$state ? $state[feature.property] : 'n/a'}
 {/if}
