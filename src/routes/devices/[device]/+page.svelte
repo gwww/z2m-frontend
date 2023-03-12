@@ -1,6 +1,8 @@
 <script lang="ts">
-    import { TabGroup, Tab } from '@skeletonlabs/skeleton';
+    import { setContext } from 'svelte';
     import { page } from '$app/stores';
+    import { writable, type Writable } from 'svelte/store';
+    import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 
     import * as MQTT from '$lib/mqtt';
     import { devices } from '$lib/mqtt';
@@ -17,8 +19,6 @@
         DeviceState,
         Maybe,
     } from '$lib/types';
-    import { setContext } from 'svelte';
-    import { writable, type Writable } from 'svelte/store';
 
     let currentTab = 0;
     const lorem =
