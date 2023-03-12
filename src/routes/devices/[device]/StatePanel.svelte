@@ -11,13 +11,15 @@
 
     export let id: string;
 
+    let online_status = 'Not available';
+    let last_seen = 'Not available';
+
     $: device = $devices.find((d) => d.ieee_address === id);
     $: state = getContext('state') as Writable<DeviceState>;
 
     $: availability_configured = $devices.some((d) => d.availability !== undefined);
-    $: online_status = 'Not available';
     $: if (device?.availability !== undefined) {
-        if (device?.availability) {
+        if (device.availability) {
             online_status = '<span class="text-success-600">Online</span>';
         } else {
             online_status = '<span class="text-error-500">Offline</span>';
@@ -27,15 +29,14 @@
     $: last_seen_configured =
         $bridge_info?.config.advanced.last_seen &&
         $bridge_info.config.advanced.last_seen !== 'disable';
-    $: last_seen = 'Not available';
     $: if ($state?.last_seen) {
         last_seen = timeago.format($state.last_seen as Date);
     }
 
-    $: exposed = device?.device?.definition.exposes || [];
     let exposed_status: ExposedItemBase[];
     let exposed_properties: ExposedItemBase[];
     let exposed_composite: ExposedFeature[];
+    $: exposed = device?.device?.definition.exposes || [];
     $: {
         exposed_status = [];
         exposed_composite = [];
