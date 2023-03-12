@@ -8,15 +8,11 @@
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 
     let state: Writable<DeviceState> = getContext('state');
-    let value: boolean;
-    let feature: ExposedBinary;
-    let promise: Promise<string> | undefined = undefined;
     const id: string = getContext('id');
+    let promise: Promise<string> | undefined = undefined;
 
-    $: {
-        feature = $$props as ExposedBinary;
-        value = $state && $state[feature.property] === feature.value_on;
-    }
+    $: feature = $$props as ExposedBinary;
+    $: value = $state && $state[feature.property] === feature.value_on;
 
     const changed = () => {
         promise = MQTT.set(id, {
