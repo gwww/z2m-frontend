@@ -11,7 +11,6 @@
         enum: EnumFeature,
         numeric: NumericFeature,
     };
-
     $: feature = $$props;
 </script>
 
@@ -22,7 +21,6 @@
     {#if feature.description}
         <div class="text-xs pb-2">{feature.description}</div>
     {/if}
-
     {#if feature_types[feature.type]}
         <svelte:component this={feature_types[feature.type]} {...feature} />
     {:else if feature.type === '_html_'}

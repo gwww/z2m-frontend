@@ -9,17 +9,16 @@
     import { isWritable } from '$lib/utils/feature';
     import RequestStatus from '$lib/components/RequestStatus.svelte';
 
-    let state: Writable<DeviceState> = getContext('state');
     const gen_id = generateId();
     const feature = $$props as ExposedEnum;
     let promise: Promise<string> | undefined = undefined;
+    let state: Writable<DeviceState> = getContext('state');
     const id: string = getContext('id');
 
     $: property = $state ? $state[feature.property] || '' : '';
     $: value = property;
 
     const enumChanged = () => {
-        console.log('enum changed, value', value);
         promise = MQTT.set(id, { [feature.property]: `${value}` });
     };
 </script>
