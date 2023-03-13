@@ -100,14 +100,14 @@
                 </span>
             {/if}
             <button
-                class="bg-success-500 px-1 text-sm"
+                class="bg-success-500 px-1 text-sm rounded-sm"
                 on:click|self|stopPropagation={save}
                 type="button"
             >
                 <slot name="save">&check;</slot>
             </button>
             <button
-                class="bg-error-500 px-1 text-sm"
+                class="bg-error-500 px-1 text-sm rounded-sm"
                 on:click|self|stopPropagation={cancel}
                 type="button"
             >
