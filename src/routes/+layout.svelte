@@ -27,7 +27,7 @@
     </svelte:fragment>
 
     <!-- Page Route Content -->
-    <div class="pt-8 px-4 lg:px-32">
+    <div class="container h-full pt-8 mx-auto">
         <slot />
     </div>
 </AppShell>
