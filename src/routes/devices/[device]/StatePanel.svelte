@@ -36,14 +36,17 @@
     let exposed_status: ExposedItemBase[];
     let exposed_properties: ExposedItemBase[];
     let exposed_composite: ExposedFeature[];
+    let exposed_feature: ExposedFeature;
     $: exposed = device?.device?.definition.exposes || [];
     $: {
         exposed_status = [];
         exposed_composite = [];
         exposed_properties = [];
         exposed.forEach((feature) => {
-            if (isComposite(feature.type)) {
+            if (feature.type === 'composite') {
                 exposed_composite.push(feature as ExposedFeature);
+            } else if (isFeature(feature.type)) {
+                exposed_feature = feature as ExposedFeature;
             } else if (isReadOnly(feature as ExposedItemBase)) {
                 exposed_status.push(feature as ExposedItemBase);
             } else {
@@ -59,13 +62,8 @@
         return (feature.access & AccessType.ACCESS_WRITE) === 0;
     };
 
-    const isComposite = (_type: string): boolean => {
+    const isFeature = (_type: string): boolean => {
         return (EXPOSED_FEATURE_TYPE as ReadonlyArray<string>).includes(_type);
-    };
-
-    const getCompositeTitle = (_type: string, name: string) => {
-        if (_type === 'composite') return any2Title(name);
-        return `${any2Title(_type)} Controls`;
     };
 </script>
 
@@ -83,8 +81,16 @@
     {/each}
 </StateSection>
 
+{#if exposed_feature}
+    <StateSection title={`${any2Title(exposed_feature.type)} Controls`}>
+        {#each exposed_feature.features as feature}
+            <WrappedFeature {...feature} />
+        {/each}
+    </StateSection>
+{/if}
+
 {#each exposed_composite as composite}
-    <StateSection title={getCompositeTitle(composite.type, composite.name || '')}>
+    <StateSection title={any2Title(composite.name || '')}>
         {#each composite.features as feature}
             <WrappedFeature {...feature} />
         {/each}

@@ -46,6 +46,8 @@
 </div>
 
 <!-- <pre>{JSON.stringify(data, null, 2)}</pre> -->
+
+<!-- CSS adapted from https://htmldom.dev/placeholder-for-a-contenteditable-element/ -->
 <style>
     [contenteditable='true']:active,
     [contenteditable='true']:focus {
